@@ -1,0 +1,25 @@
+.header-toolbar{
+    padding: 0 16px;
+}
+.middle-space {
+    flex : 1 1 auto;
+}
+.header-group {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 8px;
+    align-items: center;
+}
+.button-link{
+    text-decoration: none;
+    color: whitesmoke;
+}
+.button-link:hover{
+    color: #ffd740;
+}
+.welcome-banner{
+    text-align: center;
+    margin: 24px 0;
+    padding: 8px 0;
+    background-color: #f3f3f3;
+}

@@ -1,0 +1,18 @@
+.alert{
+    background-color: rgb(238, 238, 238);
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+}
+.alert-success{
+    background-color: lightgreen;
+    color: white;
+}
+.alert-error{
+    background-color: lightcoral;
+    color: white;
+}
+.alert-warning{
+    background-color: lightgoldenrodyellow;
+    color: white;
+}

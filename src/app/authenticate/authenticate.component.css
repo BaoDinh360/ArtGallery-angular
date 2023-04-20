@@ -1,0 +1,16 @@
+.auth-container{
+    padding: 16px 0;
+    text-align: center;
+}
+.login-link{
+    color: #673ab7;
+}
+.auth-form-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.auth-form-button{
+    display: flex;
+    justify-content: flex-end;
+}

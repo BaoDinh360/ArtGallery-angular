@@ -1,0 +1,19 @@
+<div class="file-upload-container">
+    <mat-form-field class="file-upload-field">
+        <mat-label>{{uploadImgName}}</mat-label>
+        <input matInput disabled/>
+        <button mat-icon-button matSuffix type="button" (click)="fileInput.click()">
+            <mat-icon>attach_file</mat-icon>
+        </button>
+        <button *ngIf="fileUpload" mat-icon-button matSuffix (click)="uploadFile()">
+            <mat-icon>upload</mat-icon>
+        </button>
+        <input hidden #fileInput type="file" 
+            name="uploadFile" id="file" accept="image/*" 
+            (change)="onSelectFile($event)"/>
+    </mat-form-field>
+    <mat-progress-bar *ngIf="uploadProgress != 0" 
+        mode="determinate" [value]="uploadProgress">
+    </mat-progress-bar>
+</div>
+

@@ -1,0 +1,57 @@
+<div class="auth-container">
+    <span mat-dialog-title>{{authType}}</span>
+    <span>
+        <a *ngIf="authType == 'Sign in'" href="" class="login-link">Create an account</a>
+        <a *ngIf="authType == 'Sign up'" href="" class="login-link">Already have an account?</a>
+    </span>
+    <form novalidate (ngSubmit)="onSubmit()" [formGroup]="authForm">
+        <div mat-dialog-content class="auth-form-container">
+            <mat-form-field *ngIf="authType == 'Sign up'">
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="nameControl"/>
+                <mat-error *ngIf="name?.errors?.['required']">
+                    Please enter your name
+                </mat-error>
+
+            </mat-form-field>
+            <mat-form-field *ngIf="authType == 'Sign up'">
+                <mat-label>Username</mat-label>
+                <input matInput formControlName="usernameControl"/>
+                <mat-error *ngIf="username?.errors?.['required']">
+                    Please enter your username
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input matInput email="true" formControlName="emailControl"/>
+                <mat-error *ngIf="email?.errors?.['email']">
+                    Please enter a valid email
+                </mat-error>
+                <mat-error *ngIf="email?.errors?.['required']">
+                    Please enter your email
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input matInput type="password" 
+                    formControlName="passwordControl"
+                    (keyup)="inputValueChanged($event)"/>
+                <mat-error *ngIf="authType == 'Sign up' && password?.errors?.['required']">
+                    Please enter your password
+                </mat-error>
+            </mat-form-field>
+            <div *ngIf="authType == 'Sign in'">
+                <mat-error *ngIf="isSignInError">{{errorMsg}}</mat-error>
+            </div>
+
+        </div>
+        <div mat-dialog-actions class="auth-form-button">
+            <button mat-flat-button color="primary" type="submit">{{authType}}</button>
+            <button mat-flat-button (click)="closeDialog()">Cancel</button>
+        </div>
+    </form>
+    
+</div>
+

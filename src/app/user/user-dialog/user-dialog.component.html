@@ -1,0 +1,22 @@
+<button mat-icon-button [matMenuTriggerFor]="userDialog">
+    <mat-icon>account_box</mat-icon>
+</button>
+
+<mat-menu #userDialog="matMenu">
+    <mat-list>
+        <div class="user-profile-dialog"></div>
+        <mat-list-item>
+            <img matListItemAvatar src="https://material.angular.io/assets/img/examples/shiba1.jpg"/>
+            <h4 matListItemTitle>{{currentUserLoginInfo.username}}</h4>
+            <p matListItemLine>{{currentUserLoginInfo.email}}</p>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-action-list>
+            <a routerLink="/user-info" mat-list-item>My profile</a>
+            <a routerLink="/post-list" mat-list-item>My posts</a>
+        </mat-action-list>
+        <mat-list-item>
+            <button mat-flat-button color="primary" (click)="signOut()">Sign out</button>
+        </mat-list-item>
+    </mat-list>
+</mat-menu>

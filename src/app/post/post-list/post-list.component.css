@@ -1,0 +1,22 @@
+.post-list-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.card-container{
+    max-width: 800px;
+    margin: 16px 0;
+}
+.card-avatar{
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+}
+.card-content{
+    margin: 8px 0 0 0;
+}
+.fab-add-button{
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+}
