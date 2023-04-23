@@ -12,7 +12,8 @@ const routes: Routes = [
   // { path : 'user-info', component : UserInfoComponent, canActivate : [AuthGuard]},
   //Lazy load UserModule
   {
-    path : 'user-info',
+    path : 'user/:username',
+    component : UserInfoComponent,
     loadChildren : () => import('./user/user.module').then(m => m.UserModule)
   },
   { path : '**', redirectTo : '', pathMatch: 'full'}

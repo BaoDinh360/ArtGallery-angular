@@ -6,12 +6,16 @@ import { UserDialogComponent } from './user-dialog/user-dialog.component';
 import { MaterialModule } from '../shared/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { UserPostListComponent } from './user-post-list/user-post-list.component';
 
 
 @NgModule({
   declarations: [
     UserDialogComponent,
-    UserRoutingComponents
+    UserRoutingComponents,
+    UserProfileComponent,
+    UserPostListComponent
   ],
   imports: [
     CommonModule,

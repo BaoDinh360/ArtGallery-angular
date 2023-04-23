@@ -16,6 +16,10 @@ export class PostService {
     return this.httpClient.get<PagedResponseResult<Post>>('/api/posts');
   }
 
+  getPostsByCurrentUser(){
+    return this.httpClient.get<PagedResponseResult<Post>>('/api/posts/my-posts');
+  }
+
   createPost(newPost : CreatePost){
     return this.httpClient.post<ResponseResult<Post>>('/api/posts', newPost);
   }

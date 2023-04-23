@@ -12,8 +12,7 @@
         </mat-list-item>
         <mat-divider></mat-divider>
         <mat-action-list>
-            <a routerLink="/user-info" mat-list-item>My profile</a>
-            <a routerLink="/post-list" mat-list-item>My posts</a>
+            <a [routerLink]="['/user', currentUserLoginInfo.username, 'profile']" mat-list-item>My profile</a>
         </mat-action-list>
         <mat-list-item>
             <button mat-flat-button color="primary" (click)="signOut()">Sign out</button>

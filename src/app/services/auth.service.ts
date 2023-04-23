@@ -38,7 +38,9 @@ export class AuthService {
   refreshAccessToken(refreshToken : string){
     return this.httpClient.post<ResponseResult<any>>('/api/token', {refreshToken : refreshToken})
       .pipe(tap(result =>{
-        this.cookieService.set('access-token', result.data.accessToken);
+        if(result.status == 'success'){
+          this.cookieService.set('access-token', result.data.accessToken);
+        }
       }));
   }
 

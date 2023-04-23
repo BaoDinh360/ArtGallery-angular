@@ -16,6 +16,12 @@
             <app-user-dialog *ngIf="isUserSignedIn" 
                 (signOutEvent)="userSignOut($event)">
             </app-user-dialog>
+            <a *ngIf="isUserSignedIn"
+                routerLink="/post-edit" mat-flat-button
+                color="accent" class="fab-add-button">
+                <mat-icon>add</mat-icon>
+                Create post
+            </a>
         </div>
     </mat-toolbar>
 

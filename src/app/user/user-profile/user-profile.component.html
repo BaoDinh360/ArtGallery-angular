@@ -1,0 +1,31 @@
+<form novalidate (ngSubmit)="onUpdateInfo()" [formGroup]="userInfoForm">
+    <div class="profile-info-row">
+        <div class="user-avatar-container">
+            <img class="user-img-avatar" 
+            src="https://material.angular.io/assets/img/examples/shiba1.jpg"/>
+            <app-file-upload></app-file-upload>
+        </div>
+    </div>
+    <div class="profile-info-row">
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput 
+                formControlName="nameControl"/>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput type="email" 
+                formControlName="emailControl"/>
+        </mat-form-field>
+    </div>
+    <div class="profile-info-row">
+        <mat-form-field>
+            <mat-label>Username</mat-label>
+            <input matInput 
+                formControlName="usernameControl"/>
+        </mat-form-field>
+    </div>
+    <div class="profile-info-row">
+        <button mat-flat-button color="primary" type="submit">Update</button>
+    </div>
+</form>

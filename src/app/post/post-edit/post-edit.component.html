@@ -23,8 +23,8 @@
                     <button mat-flat-button color="primary" type="submit">Create post</button>
                 </div>
                 <div class="right-section">
-                    <div *ngIf="imgPreviewUrl">
-                        <img class="img-preview" src="{{imgPreviewUrl}}"/>
+                    <div class="img-container">
+                        <img *ngIf="imgPreviewUrl" class="img-preview" src="{{imgPreviewUrl}}"/>
                     </div>
                 </div>
             </div>

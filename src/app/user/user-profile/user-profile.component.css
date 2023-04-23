@@ -1,0 +1,21 @@
+.profile-info-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 16px;
+}
+.profile-info-row > mat-form-field{
+    width: 100%;
+}
+.user-avatar-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    column-gap: 16px;
+}
+.user-img-avatar{
+    vertical-align: middle;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}

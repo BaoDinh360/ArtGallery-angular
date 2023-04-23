@@ -28,9 +28,25 @@
     width: 48%;
     height: auto;
 }
+.img-container{
+    background-color: lightgrey;
+    width: 500px;
+    max-width: 550px;
+    /* max-width: 800px; */
+    height: auto;
+    padding-top: 56.25%;
+    position: relative;
+    overflow: hidden;
+}
 .img-preview{
-    max-width: 80%;
-    max-height: 80%;
-    margin-left: auto;
-    margin-right: auto;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    margin: 0 auto;
 }
