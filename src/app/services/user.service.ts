@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ResponseResult } from '../shared/models/responseResult';
-import { User } from '../shared/models/userModel';
+import { UpdateUserInfo, User, UserAvatar } from '../shared/models/userModel';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +13,15 @@ export class UserService {
   ) { }
 
   getUserProfile(){
-    return this.httpClient.get<ResponseResult<User>>('/api/users/my-profile');
+    return this.httpClient.get<ResponseResult<User>>('/api/users/profile');
+  }
+
+  uploadUserAvatar(formData: FormData){
+    return this.httpClient.post<ResponseResult<UserAvatar>>('/api/users/upload', formData);
+  }
+
+  updateCurrentUserInfo(currentUserInfo: UpdateUserInfo){
+    return this.httpClient.put<ResponseResult<User>>('/api/users/update', currentUserInfo);
+
   }
 }

@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CreatePost, Post } from '../shared/models/postModel';
+import { Post } from '../shared/models/post.model';
 import { PagedResponseResult, ResponseResult } from '../shared/models/responseResult';
+import { Image } from '../shared/models/image.model';
+import { CreatePost } from '../shared/models/create-post.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,15 +14,24 @@ export class PostService {
     private httpClient : HttpClient
   ) { }
 
-  getAllPosts () {
-    return this.httpClient.get<PagedResponseResult<Post>>('/api/posts');
+  getAllPosts (page: number, limit: number) {
+    // return this.httpClient.get<PagedResponseResult<Post>>('/api/posts');
+    return this.httpClient.get<PagedResponseResult<Post>>(`/api/posts?page=${page}&limit=${limit}`);
   }
 
-  getPostsByCurrentUser(){
-    return this.httpClient.get<PagedResponseResult<Post>>('/api/posts/my-posts');
+  getPost(id: string){
+    return this.httpClient.get<ResponseResult<Post>>(`/api/posts/${id}`);
+  }
+
+  getPostsByCurrentUser(page: number, limit: number){
+    return this.httpClient.get<PagedResponseResult<Post>>(`/api/posts/my-posts?page=${page}&limit=${limit}`);
   }
 
   createPost(newPost : CreatePost){
     return this.httpClient.post<ResponseResult<Post>>('/api/posts', newPost);
+  }
+
+  uploadPostImage(formData: FormData){
+    return this.httpClient.post<ResponseResult<Image>>('/api/posts/upload', formData);
   }
 }

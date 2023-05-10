@@ -1,9 +1,10 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthenticateComponent } from '../authenticate/authenticate.component';
 import { AuthService } from '../services/auth.service';
 import { UserDialogComponent } from '../user/user-dialog/user-dialog.component';
+import { EventSocketService } from '../services/event-socket.service';
 
 @Component({
   selector: 'app-header',
@@ -12,19 +13,22 @@ import { UserDialogComponent } from '../user/user-dialog/user-dialog.component';
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
 
-  isUserSignedIn : boolean = false;
+  @Input() isUserSignedIn : boolean = false;
+  @Output() userSignInEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   openSignIn : boolean = false;
 
   constructor(
     public dialog : MatDialog,
     private authService : AuthService,
-    private router : Router
-  ){}
+    private router : Router,
+  ){
+    // this.authService.checkTokenExpiresOnStartUp();
+  }
 
   ngOnInit(): void {
-    this.authService.setUpCurrentUserLoginInfo();
-    this.isUserSignedIn = this.authService.isSignedIn();
+    // this.authService.setUpCurrentUserLoginInfo();
+    // this.isUserSignedIn = this.authService.isSignedIn();
   }
 
   ngAfterViewInit(): void {
@@ -52,7 +56,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       }
       else{
         if(result.event == 'Signed in'){
-          this.isUserSignedIn = result.data.isSignedIn;
+          // this.isUserSignedIn = result.data.isSignedIn;
+          this.userSignInEvent.emit(result.data.isSignedIn);
         }
       }
       
@@ -60,6 +65,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   userSignOut(event : boolean) : void{
-    this.isUserSignedIn = event;
+    // this.isUserSignedIn = event;
+    this.userSignInEvent.emit(event);
   }
 }

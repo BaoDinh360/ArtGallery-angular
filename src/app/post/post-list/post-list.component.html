@@ -1,31 +1,51 @@
 
 <div>
-    <mat-grid-list cols="3" rowHeight="1:1" [gutterSize]="'16px'">
-        <mat-grid-tile *ngFor="let post of postLists; let i = index">
-            <mat-card class="card-container">
-                <mat-card-header>
-                    <div mat-card-avatar class="card-avatar"></div>
-                    <mat-card-title>{{post.author.username}}</mat-card-title>
-                    <mat-card-subtitle>{{post.updatedAt | date : 'dd/MM/yyyy HH:mm:ss'}}</mat-card-subtitle>
-                </mat-card-header>
-                <div class="img-container">
-                    <img class="post-img" *ngIf="post.postImage!== undefined" mat-card-image src="{{post.postImageUrl}}">
-                </div>
-                
-                <mat-card-content class="card-content">
-                    <div>
-                        <h2>{{post.postName}}</h2>
-                        <!-- <p>{{post.description}}</p> -->
+    <div>
+        <mat-grid-list cols="3" rowHeight="1:1.2" [gutterSize]="'16px'">
+            <mat-grid-tile *ngFor="let post of postLists; let i = index">
+                <mat-card class="card-container">
+                    <mat-card-header>
+                        <!-- <div mat-card-avatar class="card-avatar"></div> -->
+                        <img *ngIf="post != undefined" mat-card-avatar src="{{post.author.avatar.path}}"/>
+                        <mat-card-title>{{post.author.username}}</mat-card-title>
+                        <mat-card-subtitle>{{post.createdAt | date : 'dd/MM/yyyy HH:mm:ss'}}</mat-card-subtitle>
+                    </mat-card-header>
+                    <div class="img-container" (click)="openPostDetail(post)">
+                        <img class="post-img" *ngIf="post.postImage!== undefined" mat-card-image src="{{post.postImage.path}}">
                     </div>
-                    <mat-divider></mat-divider>
-                </mat-card-content>
-                <mat-card-actions>
-                    <button mat-button>Like</button>
-                    <button mat-button>Comment</button>
-                </mat-card-actions>
-            </mat-card>
-        </mat-grid-tile>
-    </mat-grid-list>
+                    
+                    <mat-card-content class="card-content">
+                        <div>
+                            <h2>{{post.postName}}</h2>
+                            <!-- <p>{{post.description}}</p> -->
+                        </div>
+                        <mat-divider></mat-divider>
+                    </mat-card-content>
+                    <mat-card-actions>
+                        {{post.likes || 0}}
+                        <button mat-icon-button color="warn" 
+                            (click)="onLikePost(post)">
+                            
+                            <mat-icon>favorite</mat-icon>
+                        </button>
+                        <button mat-icon-button color="primary">
+                            <mat-icon>comment</mat-icon>
+                        </button>
+                    </mat-card-actions>
+                </mat-card>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </div>
+    <br>
+    <mat-divider></mat-divider>
+    <mat-paginator #paginator *ngIf="postPagination"
+        [length]="postPagination.totalCount"
+        [pageSize]="postPagination.itemsPerPage"
+        [pageIndex]="postPagination.pageIndex"
+        [pageSizeOptions]="[3, 6, 9, 18]"
+        (page)="paginateEvent($event)"
+        aria-label="Select page">
+    </mat-paginator>
     <!-- <mat-card class="card-container" *ngFor="let post of postLists; let i = index">
         <mat-card-header>
             <div mat-card-avatar class="card-avatar"></div>

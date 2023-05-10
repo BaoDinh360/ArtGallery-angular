@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { UserRegistration } from '../shared/models/userModel';
+import { RESPONSE_STATUS } from '../shared/models/enums';
 
 @Component({
   selector: 'app-authenticate',
@@ -103,7 +104,7 @@ export class AuthenticateComponent implements OnInit {
       )
       .subscribe(result =>{
           console.log(result);
-          if(result.status == 'success'){
+          if(result.status === RESPONSE_STATUS.SUCCESS){
             this.authService.storeUserLoginInfo(result.data);
             this.authService.setUpCurrentUserLoginInfo();
             this.dialogRef.close({
@@ -111,7 +112,7 @@ export class AuthenticateComponent implements OnInit {
               data : {isSignedIn : true}
             })
           }
-          else if(result.status == 'error'){
+          else if(result.status === RESPONSE_STATUS.ERROR){
             this.isSignInError = true;
             this.errorMsg = result.message;
           }

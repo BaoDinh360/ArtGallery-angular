@@ -4,6 +4,8 @@ export interface User {
     email : string,
     username : string,
     password : string,
+    avatar?: UserAvatar,
+    avatarUrl?: string,
     createdAt? : string,
     updatedAt? : string
     
@@ -20,4 +22,18 @@ export interface UserLoginCredentials{
     accessToken : string,
     refreshToken : string,
     expiredIn : string
+}
+
+export interface UserAvatar{
+    _id?: string,
+    name: string,
+    type: string,
+    size: string,
+    path: string
+}
+
+export interface UpdateUserInfo{
+    name: string;
+    username: string;
+    avatar?: UserAvatar;
 }

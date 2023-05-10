@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http'
 
@@ -30,8 +30,13 @@ import { AuthInterceptor } from './services/auth-interceptor';
 import { FileUploadComponent } from './shared/components/file-upload/file-upload.component';
 import { AlertComponent } from './shared/components/alert/alert.component';
 import { UserModule } from './user/user.module';
-import { MaterialModule } from './shared/material.module';
+import { MaterialModule } from './material-ui/material.module';
 import { SharedModule } from './shared/shared.module';
+import { Socket, SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+
+//socket config
+const socketConfig : SocketIoConfig = { url: 'http://localhost:3000', options: { autoConnect: false, }};
+
 
 
 @NgModule({
@@ -70,13 +75,15 @@ import { SharedModule } from './shared/shared.module';
     // MatProgressBarModule,
     // MatSidenavModule,
 
-    UserModule
+    UserModule,
+    //Socket.io
+    SocketIoModule.forRoot(socketConfig),
   ],
   providers: [
     {
       provide : HTTP_INTERCEPTORS, useClass : AuthInterceptor, multi:true
     },
-    CookieService
+    CookieService,
   ],
   bootstrap: [AppComponent]
 })

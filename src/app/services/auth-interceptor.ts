@@ -15,6 +15,7 @@ export class AuthInterceptor implements HttpInterceptor{
         if(authAccessToken){
             //Clone req và thêm authorization bearer vào header nếu đã login 
             const clonedReq = this.addTokenToHeader(req, authAccessToken);
+            // return next.handle(clonedReq);
             return next.handle(clonedReq).pipe(catchError(err =>{
                 //Trong TH accessToken hết hạn, lấy lại access token mới
                 if(err instanceof HttpErrorResponse && err.status === 401){

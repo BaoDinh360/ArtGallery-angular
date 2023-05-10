@@ -4,6 +4,7 @@ import { AuthGuard } from '../shared/guards/auth.guard';
 import { UserInfoComponent } from './user-info/user-info.component';
 import { UserPostListComponent } from './user-post-list/user-post-list.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { PostDetailComponent } from '../shared/components/post-detail/post-detail.component';
 
 const routes: Routes = [
   {
@@ -26,7 +27,17 @@ const routes: Routes = [
   },
   {
     path: 'posts',
-    component: UserPostListComponent,
+    children:[
+      {
+        path: '',
+        component: UserPostListComponent,
+      },
+      {
+        path:':id',
+        component: PostDetailComponent,
+      }
+    ],
+    // component: UserPostListComponent,
     canActivate: [AuthGuard]
   }
 ];

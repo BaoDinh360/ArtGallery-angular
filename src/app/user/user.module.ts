@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { UserRoutingComponents, UserRoutingModule } from './user-routing.module';
 import { UserDialogComponent } from './user-dialog/user-dialog.component';
-import { MaterialModule } from '../shared/material.module';
+import { MaterialModule } from '../material-ui/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { UserProfileComponent } from './user-profile/user-profile.component';

@@ -4,11 +4,13 @@ import { PostEditComponent } from './post/post-edit/post-edit.component';
 import { PostListComponent } from './post/post-list/post-list.component';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { UserInfoComponent } from './user/user-info/user-info.component';
+import { PostDetailComponent } from './shared/components/post-detail/post-detail.component';
 
 const routes: Routes = [
   { path : '', component : PostListComponent},
   { path : 'post-list', component : PostListComponent},
   { path : 'post-edit', component : PostEditComponent, canActivate : [AuthGuard]},
+  { path : 'post/:author/:id', component : PostDetailComponent},
   // { path : 'user-info', component : UserInfoComponent, canActivate : [AuthGuard]},
   //Lazy load UserModule
   {

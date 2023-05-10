@@ -5,6 +5,7 @@ import { finalize } from 'rxjs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { FileUpload } from '../../models/fileUploadModel';
 import { ResponseResult } from '../../models/responseResult';
+import { RESPONSE_STATUS } from '../../models/enums';
 
 @Component({
   selector: 'app-file-upload',
@@ -65,7 +66,10 @@ export class FileUploadComponent implements ControlValueAccessor {
       reader.readAsDataURL(fileImg);
       reader.onload = (_event) =>{
         const imageUrl = reader.result;
-        this.fileSelected.emit(imageUrl);
+        this.fileSelected.emit({
+          imageUrl,
+          fileImg
+        });
       }
     }
   }
@@ -89,7 +93,7 @@ export class FileUploadComponent implements ControlValueAccessor {
             break;
           case HttpEventType.Response :
             const result = event.body as unknown as ResponseResult<FileUpload>;
-            if(result.status == 'success'){
+            if(result.status === RESPONSE_STATUS.SUCCESS){
                 console.log(result);
                 this.uploadImgName = this.fileUpload!.name;
                 this.fileUploadCompleted.emit(result);

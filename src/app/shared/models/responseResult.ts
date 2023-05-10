@@ -1,5 +1,5 @@
 export interface ResponseResult<T> {
-    status : string,
+    status : number,
     statusCode : number,
     data : T,
     message : string,
@@ -7,11 +7,14 @@ export interface ResponseResult<T> {
 }
 
 export interface PagedResponseResult<T> {
-    status : string,
+    status : number,
     statusCode : number,
     data : {
-        items : T[],
-        total : number 
+        totalCount: number,
+        itemsPerPage: number,
+        pageIndex: number,
+        totalPage: number,
+        items : T[]
     },
     message : string,
     stack : string

@@ -1,9 +1,12 @@
 <form novalidate (ngSubmit)="onUpdateInfo()" [formGroup]="userInfoForm">
     <div class="profile-info-row">
         <div class="user-avatar-container">
-            <img class="user-img-avatar" 
-            src="https://material.angular.io/assets/img/examples/shiba1.jpg"/>
-            <app-file-upload></app-file-upload>
+            <img *ngIf="userModel != undefined" class="user-img-avatar" 
+            src="{{userModel.avatarUrl}}"/>
+            <app-file-upload formControlName="avatarUploadControl"
+                (fileSelected)="onFileSelected($event)"
+                #fileUpload>
+            </app-file-upload>
         </div>
     </div>
     <div class="profile-info-row">

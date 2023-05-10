@@ -5,9 +5,9 @@
         <button mat-icon-button matSuffix type="button" (click)="fileInput.click()">
             <mat-icon>attach_file</mat-icon>
         </button>
-        <button *ngIf="fileUpload" mat-icon-button matSuffix (click)="uploadFile()">
+        <!-- <button *ngIf="fileUpload" mat-icon-button matSuffix (click)="uploadFile()">
             <mat-icon>upload</mat-icon>
-        </button>
+        </button> -->
         <input hidden #fileInput type="file" 
             name="uploadFile" id="file" accept="image/*" 
             (change)="onSelectFile($event)"/>

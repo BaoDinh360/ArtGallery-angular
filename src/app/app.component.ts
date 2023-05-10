@@ -8,13 +8,23 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent implements OnInit {
 
+  isUserSignedIn: boolean = false;
   constructor(
     private authService : AuthService
-  ){}
-
+  ){
+    this.authService.checkTokenExpiresOnStartUp();
+  }
+  // getIsUserSignedIn() : boolean{
+  //   return this.isUserSignedIn;
+  // }
   ngOnInit(): void {
-    //this.authService.setUpCurrentUserLoginInfo();
+    this.authService.setUpCurrentUserLoginInfo();
+    this.isUserSignedIn = this.authService.isSignedIn();
   }
   
+  onUserSignedIn(event: boolean){
+    this.isUserSignedIn = event;
+  }
+
   title = 'art-gallery';
 }

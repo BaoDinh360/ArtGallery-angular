@@ -7,9 +7,10 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 import { PostService } from 'src/app/services/post.service';
 import { AlertComponent } from 'src/app/shared/components/alert/alert.component';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
-import { AlertStatus } from 'src/app/shared/models/enums';
+import { CreatePost } from 'src/app/shared/models/create-post.model';
+import { AlertStatus, RESPONSE_STATUS } from 'src/app/shared/models/enums';
 import { FileUpload } from 'src/app/shared/models/fileUploadModel';
-import { CreatePost, Post } from 'src/app/shared/models/postModel';
+import { Post } from 'src/app/shared/models/post.model';
 import { ResponseResult } from 'src/app/shared/models/responseResult';
 
 @Component({
@@ -28,6 +29,7 @@ export class PostEditComponent implements OnInit {
   postForm : FormGroup;
   postImgId : string = '';
   imgPreviewUrl : any;
+  fileImage!: File;
 
   constructor(
     private postService : PostService,
@@ -52,7 +54,8 @@ export class PostEditComponent implements OnInit {
   }
 
   onFileSelected(result : any){
-    this.imgPreviewUrl = result;
+    this.imgPreviewUrl = result.imageUrl;
+    this.fileImage = result.fileImg;
   }
 
   onFileUploadCompleted(result : ResponseResult<FileUpload>){
@@ -63,38 +66,39 @@ export class PostEditComponent implements OnInit {
   }
 
   onSubmit(){
-    if(this.postImgId == ''){
-      this.showAlert(this.alertStatus.ERROR, 'Please upload image first');
-      return;
-    }
+    // if(this.postImgId == ''){
+    //   this.showAlert(this.alertStatus.ERROR, 'Please upload image first');
+    //   return;
+    // }
 
     if(this.postForm.valid){
-
-      const newPost : CreatePost = {
-        postName : this.postName?.value as string,
-        description : this.postDescription?.value as string,
-        postImage : this.postImgId
-      }
-      this.postService.createPost(newPost)
-        .pipe(
-          catchError(err =>{
-            console.log(err);
-            return of(err.error);
-          })
-        )
-        .subscribe(result =>{
-          console.log(result);
-          if(result.status == 'success'){
-            this.showAlert(this.alertStatus.SUCCESS, result.message);
-            //this.resetForm();
-          }
-          else{
-            this.showAlert(this.alertStatus.ERROR, result.message);
-          }
-          
-          //this.router.navigate(['']);
+      const imageFormData = new FormData();
+      imageFormData.append('image', this.fileImage);
+      this.postService.uploadPostImage(imageFormData).subscribe(result =>{
+        const newPost : CreatePost = {
+          postName : this.postName?.value as string,
+          description : this.postDescription?.value as string,
+          postImage : result.data
+        }
+        this.postService.createPost(newPost)
+          .pipe(
+            catchError(err =>{
+              console.log(err);
+              return of(err.error);
+            })
+          )
+          .subscribe(result =>{
+            console.log(result);
+            if(result.status === RESPONSE_STATUS.SUCCESS){
+              this.showAlert(this.alertStatus.SUCCESS, result.message);
+            }
+            else{
+              this.showAlert(this.alertStatus.ERROR, result.message);
+            }
+            
+            //this.router.navigate(['']);
+        })
       })
-      
     }
   }
 

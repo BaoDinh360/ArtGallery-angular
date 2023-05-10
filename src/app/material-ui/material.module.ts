@@ -16,6 +16,7 @@ import {MatListModule} from '@angular/material/list'
 import {MatProgressBarModule} from '@angular/material/progress-bar'
 import {MatSidenavModule} from '@angular/material/sidenav'
 import {MatTableModule} from '@angular/material/table'
+import {MatPaginatorModule} from '@angular/material/paginator'
 
 @NgModule({
   declarations: [],
@@ -34,7 +35,8 @@ import {MatTableModule} from '@angular/material/table'
     MatListModule,
     MatProgressBarModule,
     MatSidenavModule,
-    MatTableModule
+    MatTableModule,
+    MatPaginatorModule
   ],
   exports: [
     MatToolbarModule,
@@ -50,7 +52,8 @@ import {MatTableModule} from '@angular/material/table'
     MatListModule,
     MatProgressBarModule,
     MatSidenavModule,
-    MatTableModule
+    MatTableModule,
+    MatPaginatorModule
   ]
 })
 export class MaterialModule { }
