@@ -1,7 +1,7 @@
 <div>
     <div class="post-detail-container" *ngIf="post != undefined">
         <div class="img-container">
-            <img class="post-img" src="{{post.postImage.path}}">
+            <img class="post-img" src="{{post.postImage}}">
         </div>
         <div class="post-info-container">
             <div class="post-action">
@@ -11,11 +11,17 @@
                         Like
                     </button>
                 </div>
-                <mat-form-field>
-                    <mat-label>Comments</mat-label>
-                    <textarea matInput type="text">
-                    </textarea>
-                </mat-form-field>
+                <form novalidate (submit)="onComment()" [formGroup]="commentForm">
+                    <mat-form-field style="width: 100%;">
+                        <mat-label>Comments</mat-label>
+                        <textarea matInput type="text" formControlName="commentControl">
+                        </textarea>
+                    </mat-form-field>
+                    <div class="comment-action">
+                        <button mat-flat-button color="primary" type="submit">Comment</button>
+                        <button mat-flat-button>Cancel</button>
+                    </div>
+                </form>
             </div>
             <div class="post-info-header">
                 <img class="user-img-avatar"
@@ -30,17 +36,18 @@
             <div class="post-info-stat">
                 <span class="icon-text">
                     <mat-icon color="warn">favorite</mat-icon>
-                    {{post.likes}} Likes
+                    {{post.likeCount}} Likes
                 </span>
                 |
                 <span class="icon-text">
                     <mat-icon color="primary">comment</mat-icon>
-                    1 Comments
+                    {{post.commentCount}} Comments
                 </span>
             </div>
             <div>
                 {{post.description}}
             </div>
+            <app-comment-list [commentList]="postCommentsList"></app-comment-list>
         </div>
     </div>
 </div>

@@ -4,7 +4,8 @@ import { AuthGuard } from '../shared/guards/auth.guard';
 import { UserInfoComponent } from './user-info/user-info.component';
 import { UserPostListComponent } from './user-post-list/user-post-list.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
-import { PostDetailComponent } from '../shared/components/post-detail/post-detail.component';
+import { PostDetailComponent } from '../post/post-detail/post-detail.component';
+import { MyPostListComponent } from '../post/my-post-list/my-post-list.component';
 
 const routes: Routes = [
   {
@@ -30,14 +31,9 @@ const routes: Routes = [
     children:[
       {
         path: '',
-        component: UserPostListComponent,
+        component: MyPostListComponent,
       },
-      {
-        path:':id',
-        component: PostDetailComponent,
-      }
     ],
-    // component: UserPostListComponent,
     canActivate: [AuthGuard]
   }
 ];

@@ -1,0 +1,20 @@
+
+<div *ngIf="commentList">
+    <ul class="comment-list">
+        <li *ngFor="let comment of commentList; let i = index">
+            <div class="comment-container">
+                <div class="user-comment-avatar">
+                    <img class="avatar-img"
+                    src="{{comment.userCommented.avatar.path}}"/>
+                </div>
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <h3 class="comment-username">{{comment.userCommented.username}}</h3>
+                        <span class="comment-date">{{comment.createdAt | date : 'dd/MM/yyyy HH:mm:ss'}}</span>
+                    </div>
+                    <p>{{comment.comment}}</p>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>

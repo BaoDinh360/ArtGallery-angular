@@ -66,28 +66,33 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
   }
 
   onLikePost(post: Post){
-    //emit data xuống server
-    this.eventSocket.emitData('like-events', post.id);
-    
-    this.eventSocket.receivedEmitedData('like-events');
-    this.eventSocket.getDataReceived().subscribe(result =>{
-      if(result != undefined){
-        this.UpdatePostLikesRealTime(result);
-      }
+    if(!this.authService.isSignedIn()){
+      console.log('Login first');
+      return;
+    }
+    else{
+      //emit data xuống server
+      this.eventSocket.emitData('like-events', post._id);
       
-    })
+      this.eventSocket.receivedEmitedData('like-events');
+      this.eventSocket.getDataReceived().subscribe(result =>{
+        if(result != undefined){
+          this.UpdatePostLikesRealTime(result);
+        }   
+      })
+    }
   }
 
   UpdatePostLikesRealTime(data: any){
-    const postIndex = this.postLists.findIndex(post => post.id == data.id);
+    const postIndex = this.postLists.findIndex(post => post._id == data.id);
     if(postIndex != -1){
-      this.postLists[postIndex].likes = data.likes;
+      this.postLists[postIndex].likeCount = data.likes;
       console.log(this.postLists[postIndex]);
       
     }
   }
 
   openPostDetail(post: Post){
-    this.router.navigate(['/post', post.author.username, post.id]);
+    this.router.navigate(['/post', post.author.username, post._id]);
   }
 }

@@ -31,7 +31,7 @@
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    margin: 0 auto;
+    margin: auto;
 }
 .post-info-container{
     display: flex;
@@ -47,6 +47,11 @@
 .post-button{
     display: flex;
     flex-direction: row;
+}
+.comment-action{
+    display: flex;
+    flex-direction: row;
+    column-gap: 8px;
 }
 .post-info-header{
     display: flex;

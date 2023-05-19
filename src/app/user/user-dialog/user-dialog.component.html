@@ -6,7 +6,7 @@
     <mat-list *ngIf="currentUserLoginInfo != undefined">
         <div class="user-profile-dialog"></div>
         <mat-list-item>
-            <img matListItemAvatar src="{{currentUserLoginInfo.avatarUrl}}"/>
+            <img matListItemAvatar src="{{currentUserLoginInfo.avatar.path}}"/>
             <h4 matListItemTitle>{{currentUserLoginInfo.username}}</h4>
             <p matListItemLine>{{currentUserLoginInfo.email}}</p>
         </mat-list-item>

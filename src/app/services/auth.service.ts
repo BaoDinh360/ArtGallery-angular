@@ -23,7 +23,6 @@ export class AuthService {
   });
 
   private currentUserLoginInfo$ = this.currentUserLoginInfo.asObservable();
-  // private accessTokenTimeout?: any;
 
   constructor(
     private httpClient : HttpClient,
@@ -41,31 +40,11 @@ export class AuthService {
 
   refreshAccessToken(refreshToken : string){
     return this.httpClient.post<ResponseResult<any>>('/api/auth/token', {refreshToken : refreshToken})
-      // .pipe(tap(result =>{
-      //   if(result.status === RESPONSE_STATUS.SUCCESS){
-      //     this.cookieService.set('access-token', result.data.accessToken);
-      //   }
-      // }));
       .pipe(map(result =>{
         this.storeUserLoginInfo(result.data);
         this.setUpCurrentUserLoginInfo();
-        this.startAccessTokenTimer();
         return result;
       }))
-  }
-
-  private startAccessTokenTimer(){
-    // const expires = this.getExpiration();
-    // if(expires != undefined){
-    //   // refresh new access token 1m before expire
-    //   const timeout = expires.minute() - (60 * 1000);
-    //   this.accessTokenTimeout =  setTimeout(
-    //     () => this.refreshAccessToken(this.cookieService.get('refresh-token')).subscribe(), 
-    //     timeout);
-    // }
-  }
-  private stopAccessTokenTimer(){
-    //clearTimeout(this.accessTokenTimeout);
   }
 
   storeUserLoginInfo(userLoginInfo : UserLoginCredentials){
@@ -79,18 +58,17 @@ export class AuthService {
     let refreshTokenDuration = parseInt(userLoginInfo.expiredIn.split("")[0]);
     let refreshExpireDate = dayjs().add(refreshTokenDuration, 'd').toDate();
 
-    this.cookieService.set('access-token', userLoginInfo.accessToken, expireDate);
-    this.cookieService.set('expire-at', JSON.stringify(expiresAt.valueOf()), expireDate);
+    this.cookieService.set('access-token', userLoginInfo.accessToken, refreshExpireDate);
+    this.cookieService.set('expire-at', JSON.stringify(expiresAt.valueOf()), refreshExpireDate);
     this.cookieService.set('refresh-token', userLoginInfo.refreshToken, refreshExpireDate);
-    this.cookieService.set('user-id', userLoginId, expireDate);
-    this.cookieService.set('username', userName, expireDate);
-    this.cookieService.set('email', email, expireDate);
+    this.cookieService.set('user-id', userLoginId, refreshExpireDate);
+    this.cookieService.set('username', userName, refreshExpireDate);
+    this.cookieService.set('email', email, refreshExpireDate);
   }
 
   signOut(){
     return this.httpClient.post<ResponseResult<any>>('/api/auth/logout', {})
       .pipe(map(result =>{
-        this.stopAccessTokenTimer();
         this.eventSocket.disconnectSocket(this.cookieService.get('user-id'));
         this.cookieService.delete('access-token');
         this.cookieService.delete('expire-at');
@@ -141,10 +119,10 @@ export class AuthService {
 
   checkTokenExpiresOnStartUp(){
     //Nếu refresh token còn thời hạn
-    if(this.cookieService.get('refresh-token') != ''){
+    if(this.getRefreshToken() != ''){
       //nếu access token đã hết hạn --> request lấy access token mới
       const refreshToken = this.cookieService.get('refresh-token');
-      if(this.cookieService.get('access-token') == ''){
+      if(this.getAuthAcessToken() == ''){
         this.refreshAccessToken(refreshToken).subscribe();
       }
     }

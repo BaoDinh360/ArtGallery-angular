@@ -1,29 +1,29 @@
 
 interface PostAuthor{
-    id : string,
+    _id : string,
     username : string,
     avatar:{
         path: string,
     }
 }
 
-interface PostImage{
-    // _id?: string,
-    // name: string,
-    // type: string,
-    // size: string,
-    path: string
-}
+// interface PostImage{
+//     // _id?: string,
+//     // name: string,
+//     // type: string,
+//     // size: string,
+//     path: string
+// }
 
 export interface Post{
-    id : string,
+    _id : string,
     postName : string,
     author : PostAuthor,
     description? : string,
-    postImage : PostImage,
+    postImage : string,
     userLikedPost?: string[],
-    likes?: number,
-    // postImageUrl? : string,
+    likeCount?: number,
+    commentCount?: number,
     createdAt : string,
     updatedAt : string
 }

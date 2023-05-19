@@ -1,0 +1,47 @@
+<table mat-table [dataSource]="postList">
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let post">
+            <button mat-icon-button (click)="onViewPostDetail(post)">
+                <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" (click)="onEditPost(post)">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="openDeleteConfirm(post)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </td>
+    </ng-container>
+    <ng-container matColumnDef="index">
+        <th mat-header-cell *matHeaderCellDef>No.</th>
+        <td mat-cell *matCellDef="let post; let i = index">{{(i + 1) + (limit * (page - 1))}}</td>
+    </ng-container>
+    <ng-container matColumnDef="postName">
+        <th mat-header-cell *matHeaderCellDef>Post name</th>
+        <td mat-cell *matCellDef="let post">{{post.postName}}</td>
+    </ng-container>
+    <ng-container matColumnDef="likes">
+        <th mat-header-cell *matHeaderCellDef>Likes</th>
+        <td mat-cell *matCellDef="let post">{{post.likeCount}}</td>
+    </ng-container>
+    <ng-container matColumnDef="comments">
+        <th mat-header-cell *matHeaderCellDef>Comments</th>
+        <td mat-cell *matCellDef="let post">{{post.commentCount}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+    <tr mat-row *matRowDef="let row; 
+            columns: tableColumns; 
+            let even = even" [ngClass]="{'table-row-color': even}">
+    </tr>
+</table>
+<mat-paginator #paginator *ngIf="postPagination"
+    [length]="postPagination.totalCount"
+    [pageSize]="postPagination.itemsPerPage"
+    [pageIndex]="postPagination.pageIndex"
+    [pageSizeOptions]="[2, 5, 10, 20]"
+    (page)="paginateEvent($event)"
+    aria-label="Select page">
+</mat-paginator>
+

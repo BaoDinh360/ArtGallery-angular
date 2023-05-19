@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { MaterialModule } from '../material-ui/material.module';
-import { PostDetailComponent } from './components/post-detail/post-detail.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { CommentListComponent } from './components/comment-list/comment-list.component';
 
 
 
@@ -11,7 +12,8 @@ import { PostDetailComponent } from './components/post-detail/post-detail.compon
   declarations: [
     FileUploadComponent,
     AlertComponent,
-    PostDetailComponent
+    ConfirmDialogComponent,
+    CommentListComponent,
   ],
   imports: [
     CommonModule,
@@ -20,7 +22,7 @@ import { PostDetailComponent } from './components/post-detail/post-detail.compon
   exports:[
     FileUploadComponent,
     AlertComponent,
-    PostDetailComponent
+    CommentListComponent
   ]
 })
 export class SharedModule { }

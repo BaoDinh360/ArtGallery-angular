@@ -11,25 +11,25 @@
                         <mat-card-subtitle>{{post.createdAt | date : 'dd/MM/yyyy HH:mm:ss'}}</mat-card-subtitle>
                     </mat-card-header>
                     <div class="img-container" (click)="openPostDetail(post)">
-                        <img class="post-img" *ngIf="post.postImage!== undefined" mat-card-image src="{{post.postImage.path}}">
+                        <img class="post-img" *ngIf="post.postImage!== undefined" mat-card-image src="{{post.postImage}}">
                     </div>
                     
                     <mat-card-content class="card-content">
                         <div>
                             <h2>{{post.postName}}</h2>
-                            <!-- <p>{{post.description}}</p> -->
                         </div>
                         <mat-divider></mat-divider>
                     </mat-card-content>
-                    <mat-card-actions>
-                        {{post.likes || 0}}
-                        <button mat-icon-button color="warn" 
+                    <mat-card-actions class="card-button">
+                        <button mat-stroked-button color="warn" 
                             (click)="onLikePost(post)">
-                            
                             <mat-icon>favorite</mat-icon>
+                            {{post.likeCount || 0}}
                         </button>
-                        <button mat-icon-button color="primary">
+                        <button mat-flat-button color="primary"
+                            (click)="openPostDetail(post)">
                             <mat-icon>comment</mat-icon>
+                            {{post.commentCount}}
                         </button>
                     </mat-card-actions>
                 </mat-card>

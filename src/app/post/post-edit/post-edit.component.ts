@@ -1,14 +1,14 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { AfterViewInit, Component, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, finalize, of } from 'rxjs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { PostService } from 'src/app/services/post.service';
 import { AlertComponent } from 'src/app/shared/components/alert/alert.component';
 import { FileUploadComponent } from 'src/app/shared/components/file-upload/file-upload.component';
 import { CreatePost } from 'src/app/shared/models/create-post.model';
-import { AlertStatus, RESPONSE_STATUS } from 'src/app/shared/models/enums';
+import { AlertStatus, EditPageState, RESPONSE_STATUS } from 'src/app/shared/models/enums';
 import { FileUpload } from 'src/app/shared/models/fileUploadModel';
 import { Post } from 'src/app/shared/models/post.model';
 import { ResponseResult } from 'src/app/shared/models/responseResult';
@@ -31,9 +31,19 @@ export class PostEditComponent implements OnInit {
   imgPreviewUrl : any;
   fileImage!: File;
 
+  postId!: string;
+  editPageState! : EditPageState;
+  post! : Post;
+
+  displayConfig!: {
+    title : string,
+    buttonTitle: string
+  }
+
   constructor(
     private postService : PostService,
-    public router : Router
+    public router : Router,
+    private route : ActivatedRoute,
   ){
     this.postForm = new FormGroup({
       postNameControl : new FormControl<string>('', [
@@ -48,9 +58,50 @@ export class PostEditComponent implements OnInit {
   get postDescription() {return this.postForm.get('postDescriptionControl')};
   get postImage() {return this.postForm.get('postImageUploadControl')}
 
+  get isDisplayForm() : boolean{
+    return this.editPageState === EditPageState.CREATE || 
+      (this.editPageState === EditPageState.EDIT && this.post !== undefined);
+  }
+
+  get isEditPage(): boolean{
+    return this.editPageState === EditPageState.EDIT;
+  }
+  get isCreatePage(): boolean{
+    return this.editPageState === EditPageState.CREATE;
+  }
+
   ngOnInit(): void {
-    console.log(this.alertRef);
-    
+    this.route.data.subscribe(data =>{
+      this.editPageState = data['pageState'];
+      this.postId = this.route.snapshot.params['id'];
+      if(this.editPageState == EditPageState.EDIT && this.postId != ''){
+        this.getPostDetail(this.postId);
+        this.postImage?.disable();
+        this.displayConfig = {
+          title: 'Edit post',
+          buttonTitle: 'Update post'
+        }
+      }
+      else{
+        this.displayConfig = {
+          title: 'Create a new post',
+          buttonTitle: 'Create post'
+        }
+      }
+    })
+  }
+
+  getPostDetail(id: string){
+    this.postService.getPost(id).subscribe(result =>{
+      if(result.status == RESPONSE_STATUS.SUCCESS){
+        this.post = result.data;
+        this.postForm.patchValue({
+          postNameControl: this.post.postName,
+          postDescriptionControl: this.post.description
+        })
+        this.imgPreviewUrl = this.post.postImage;
+      }
+    })
   }
 
   onFileSelected(result : any){
@@ -66,20 +117,60 @@ export class PostEditComponent implements OnInit {
   }
 
   onSubmit(){
-    // if(this.postImgId == ''){
-    //   this.showAlert(this.alertStatus.ERROR, 'Please upload image first');
-    //   return;
-    // }
-
     if(this.postForm.valid){
-      const imageFormData = new FormData();
+      const postData: CreatePost = {
+        postName : this.postName?.value as string,
+        description : this.postDescription?.value as string,
+        postImage : undefined
+      }
+
+      if(this.isCreatePage){
+        this.createPost(postData);
+      }
+      else if(this.isEditPage){
+        this.updatePost(postData);
+      }
+
+      // const imageFormData = new FormData();
+      // imageFormData.append('image', this.fileImage);
+      // this.postService.uploadPostImage(imageFormData).subscribe(result =>{
+      //   const newPost : CreatePost = {
+      //     postName : this.postName?.value as string,
+      //     description : this.postDescription?.value as string,
+      //     postImage : result.data
+      //   }
+      //   this.postService.createPost(newPost)
+      //     .pipe(
+      //       catchError(err =>{
+      //         console.log(err);
+      //         return of(err.error);
+      //       })
+      //     )
+      //     .subscribe(result =>{
+      //       console.log(result);
+      //       if(result.status === RESPONSE_STATUS.SUCCESS){
+      //         this.showAlert(this.alertStatus.SUCCESS, result.message);
+      //       }
+      //       else{
+      //         this.showAlert(this.alertStatus.ERROR, result.message);
+      //       }
+            
+      //       //this.router.navigate(['']);
+      //   })
+      // })
+    }
+  }
+
+  createPost(newPost: CreatePost){
+    const imageFormData = new FormData();
       imageFormData.append('image', this.fileImage);
       this.postService.uploadPostImage(imageFormData).subscribe(result =>{
-        const newPost : CreatePost = {
-          postName : this.postName?.value as string,
-          description : this.postDescription?.value as string,
-          postImage : result.data
-        }
+        newPost.postImage = result.data
+        // const newPost : CreatePost = {
+        //   postName : this.postName?.value as string,
+        //   description : this.postDescription?.value as string,
+        //   postImage : result.data
+        // }
         this.postService.createPost(newPost)
           .pipe(
             catchError(err =>{
@@ -95,11 +186,16 @@ export class PostEditComponent implements OnInit {
             else{
               this.showAlert(this.alertStatus.ERROR, result.message);
             }
-            
-            //this.router.navigate(['']);
         })
       })
-    }
+  }
+
+  updatePost(updatedPost: CreatePost){
+    const updatedPostId = this.post._id;
+    this.postService.updatePost(updatedPostId, updatedPost).subscribe(result =>{
+      console.log(result);
+      
+    })
   }
 
   showAlert(alertType : string, alertMsg : string) : void{

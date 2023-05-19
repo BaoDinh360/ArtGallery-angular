@@ -1,0 +1,13 @@
+<div class="dialog-container">
+    <span mat-dialog-title>
+        <mat-icon color="warn">delete</mat-icon>
+        <h2>Delete post</h2>
+    </span>
+    <div mat-dialog-content>
+       <p>Are you sure you want to delete post: {{dataDisplay}}?</p> 
+    </div>
+    <div mat-dialog-actions class="dialog-actions">
+        <button mat-flat-button (click)="closeDialogAndEmitData(false)">Cancel</button>
+        <button mat-flat-button color="warn" (click)="closeDialogAndEmitData(true)">Delete</button>
+    </div>
+</div>

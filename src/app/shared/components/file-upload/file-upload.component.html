@@ -2,13 +2,15 @@
     <mat-form-field class="file-upload-field">
         <mat-label>{{uploadImgName}}</mat-label>
         <input matInput disabled/>
-        <button mat-icon-button matSuffix type="button" (click)="fileInput.click()">
+        <button mat-icon-button matSuffix type="button" 
+            (click)="fileInput.click()"
+            [disabled]="disabled">
             <mat-icon>attach_file</mat-icon>
         </button>
         <!-- <button *ngIf="fileUpload" mat-icon-button matSuffix (click)="uploadFile()">
             <mat-icon>upload</mat-icon>
         </button> -->
-        <input hidden #fileInput type="file" 
+        <input hidden #fileInput type="file" [disabled]="disabled"
             name="uploadFile" id="file" accept="image/*" 
             (change)="onSelectFile($event)"/>
     </mat-form-field>

@@ -18,17 +18,20 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   openSignIn : boolean = false;
 
+  currentLoginUsername!: string;
+
   constructor(
     public dialog : MatDialog,
     private authService : AuthService,
     private router : Router,
   ){
-    // this.authService.checkTokenExpiresOnStartUp();
+
   }
 
   ngOnInit(): void {
-    // this.authService.setUpCurrentUserLoginInfo();
-    // this.isUserSignedIn = this.authService.isSignedIn();
+    this.authService.getCurrentUserLoginInfo().subscribe(result =>{
+      this.currentLoginUsername = result['username'];
+    })
   }
 
   ngAfterViewInit(): void {
@@ -67,5 +70,9 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   userSignOut(event : boolean) : void{
     // this.isUserSignedIn = event;
     this.userSignInEvent.emit(event);
+  }
+
+  openCreatePost(){
+    this.router.navigate(['post', this.currentLoginUsername, 'create-post']);
   }
 }

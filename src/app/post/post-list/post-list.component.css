@@ -17,7 +17,7 @@
     margin: 8px 0 0 0;
 }
 .img-container{
-    background-color: lightgrey;
+    background-color: white;
     width: 100%;
     /* max-width: 800px; */
     height: auto;
@@ -42,4 +42,7 @@
 .left-content{
     display: flex;
     flex-direction: column;
+}
+.card-button{
+    column-gap: 16px;
 }

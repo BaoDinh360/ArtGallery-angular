@@ -14,6 +14,7 @@ export class UserProfileComponent implements OnInit {
   userInfoForm : FormGroup;
   userModel!: User;
   fileImage!: File;
+  previewImageUrl!: string;
   constructor(
     private userService : UserService
   ){
@@ -41,26 +42,31 @@ export class UserProfileComponent implements OnInit {
   get avatarInfo() {return this.userInfoForm.get('avatarUploadControl')};
 
   getUserProfileInfo() :void{
-    this.userService.getUserProfile().subscribe(result =>{
-      if(result.status === RESPONSE_STATUS.SUCCESS){
-        this.userModel = result.data;
-        this.userInfoForm.patchValue({
-          nameControl : this.userModel.name,
-          emailControl : this.userModel.email,
-          usernameControl : this.userModel.username
-        })
-        if(this.userModel.avatar != undefined){
-          this.userModel.avatarUrl = window.location.origin + '/' + this.userModel.avatar.path;
-        }
-        else{
-          this.userModel.avatarUrl = 'https://material.angular.io/assets/img/examples/shiba1.jpg'
-        }
-      }
+    this.userService.loadUserProfile();
+    this.userService.currentUserProfile$.subscribe(result =>{
+      this.userModel = result;
+      this.previewImageUrl = this.userModel.avatar.path;
+      this.userInfoForm.patchValue({
+        nameControl : this.userModel.name,
+        emailControl : this.userModel.email,
+        usernameControl : this.userModel.username
+      })
     })
+    // this.userService.getUserProfile().subscribe(result =>{
+    //   if(result.status === RESPONSE_STATUS.SUCCESS){
+    //     this.userModel = result.data;
+    //     this.previewImageUrl = this.userModel.avatar.path;
+    //     this.userInfoForm.patchValue({
+    //       nameControl : this.userModel.name,
+    //       emailControl : this.userModel.email,
+    //       usernameControl : this.userModel.username
+    //     })
+    //   }
+    // })
   }
 
   onFileSelected(result: any){
-    this.userModel.avatarUrl = result.imageUrl;
+    this.previewImageUrl = result.imageUrl;
     this.fileImage = result.fileImg;
   }
 
@@ -77,6 +83,7 @@ export class UserProfileComponent implements OnInit {
         this.userService.updateCurrentUserInfo(currentUserInfo).subscribe(result =>{
           if(result.status === RESPONSE_STATUS.SUCCESS){
             console.log(result);
+            this.userService.loadUserProfile();
           }
         })
       })

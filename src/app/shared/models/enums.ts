@@ -9,3 +9,8 @@ export enum RESPONSE_STATUS{
     FAIL = 0,
     ERROR = -1
 }
+
+export enum EditPageState{
+    CREATE = 1,
+    EDIT = 2
+}

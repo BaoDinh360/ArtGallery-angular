@@ -23,8 +23,10 @@ export class FileUploadComponent implements ControlValueAccessor {
   uploadImgName : string = 'Choose image';
   fileUpload : File | null = null;
   uploadProgress : number = 0;
+  disabled: boolean = false;
 
   @ViewChild('fileInput') fileInputVar! : ElementRef;
+  @ViewChild('openFileButton') openFileButtonVar! : ElementRef;
 
   @Output() fileUploadCompleted : EventEmitter<ResponseResult<FileUpload>> 
     = new EventEmitter<ResponseResult<FileUpload>>();
@@ -50,7 +52,7 @@ export class FileUploadComponent implements ControlValueAccessor {
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    
+    this.disabled = isDisabled;
   }
 
   onSelectFile(event : any){

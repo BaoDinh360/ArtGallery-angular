@@ -31,6 +31,14 @@ export class PostService {
     return this.httpClient.post<ResponseResult<Post>>('/api/posts', newPost);
   }
 
+  updatePost(id: string, updatePost: CreatePost){
+    return this.httpClient.put<ResponseResult<string>>(`/api/posts/${id}`, updatePost);
+  }
+
+  deletePost(id: string){
+    return this.httpClient.delete<ResponseResult<boolean>>(`/api/posts/${id}`);
+  }
+
   uploadPostImage(formData: FormData){
     return this.httpClient.post<ResponseResult<Image>>('/api/posts/upload', formData);
   }

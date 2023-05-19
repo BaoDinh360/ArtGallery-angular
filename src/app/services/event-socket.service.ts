@@ -38,4 +38,15 @@ export class EventSocketService {
       this.dataReceived.next(data);
     })
   }
+
+  listenToEmitEvent(eventName: string, execFunc: Function){
+    this.socket.on(eventName, (data: any) =>{
+      execFunc(data);
+    });
+  }
+
+  stopEventListener(eventName: string){
+    this.socket.removeListener(eventName);
+
+  }
 }

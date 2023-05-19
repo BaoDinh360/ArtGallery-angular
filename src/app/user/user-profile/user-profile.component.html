@@ -2,7 +2,7 @@
     <div class="profile-info-row">
         <div class="user-avatar-container">
             <img *ngIf="userModel != undefined" class="user-img-avatar" 
-            src="{{userModel.avatarUrl}}"/>
+            src="{{previewImageUrl}}"/>
             <app-file-upload formControlName="avatarUploadControl"
                 (fileSelected)="onFileSelected($event)"
                 #fileUpload>

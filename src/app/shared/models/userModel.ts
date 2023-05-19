@@ -3,11 +3,11 @@ export interface User {
     name : string,
     email : string,
     username : string,
-    password : string,
-    avatar?: UserAvatar,
-    avatarUrl?: string,
-    createdAt? : string,
-    updatedAt? : string
+    // password : string,
+    avatar: UserAvatar,
+    // avatarUrl?: string,
+    // createdAt? : string,
+    // updatedAt? : string
     
 }
 
@@ -25,10 +25,6 @@ export interface UserLoginCredentials{
 }
 
 export interface UserAvatar{
-    _id?: string,
-    name: string,
-    type: string,
-    size: string,
     path: string
 }
 

@@ -1,6 +1,7 @@
-<div>
+<div *ngIf="isDisplayForm">
     <form novalidate (submit)="onSubmit()" [formGroup]="postForm">
         <div class="post-form-container">
+            <h2>{{displayConfig.title}}</h2>
             <ng-template #viewContainerRef></ng-template>
             <div class="post-form-content">
                 <div class="left-section">
@@ -20,7 +21,7 @@
                         #fileUpload>
                     </app-file-upload>
                     
-                    <button mat-flat-button color="primary" type="submit">Create post</button>
+                    <button mat-flat-button color="primary" type="submit">{{displayConfig.buttonTitle}}</button>
                 </div>
                 <div class="right-section">
                     <div class="img-container">

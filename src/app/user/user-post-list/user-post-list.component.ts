@@ -54,6 +54,6 @@ export class UserPostListComponent implements OnInit {
   }
 
   onViewPostDetail(post: Post){
-    this.router.navigate([post.id], {relativeTo: this.activatedRoute})
+    this.router.navigate([post._id], {relativeTo: this.activatedRoute})
   }
 }

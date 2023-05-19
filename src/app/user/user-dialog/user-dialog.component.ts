@@ -13,11 +13,6 @@ export class UserDialogComponent implements OnInit, AfterViewInit {
 
   @Output() signOutEvent : EventEmitter<boolean> = new EventEmitter<boolean>();
   
-  // currentUserLoginInfo = {
-  //   id : '',
-  //   email : '',
-  //   username : ''
-  // };
   currentUserLoginInfo! : User;
   display : string = '';
   constructor(
@@ -28,15 +23,13 @@ export class UserDialogComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.userService.getUserProfile().subscribe(result =>{
-      this.currentUserLoginInfo = result.data;
-      if(this.currentUserLoginInfo.avatar != undefined){
-        this.currentUserLoginInfo.avatarUrl = window.location.origin + '/' + this.currentUserLoginInfo.avatar.path;
-      }
-      else{
-        this.currentUserLoginInfo.avatarUrl = 'https://material.angular.io/assets/img/examples/shiba1.jpg';
-      }
-    });
+    // this.userService.getUserProfile().subscribe(result =>{
+    //   this.currentUserLoginInfo = result.data;
+    // });
+    this.userService.loadUserProfile();
+    this.userService.currentUserProfile$.subscribe(result =>{
+      this.currentUserLoginInfo = result;
+    })
   }
   ngAfterViewInit(): void {
   }
