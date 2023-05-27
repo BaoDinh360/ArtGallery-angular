@@ -1,52 +1,124 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { AuthService } from './auth.service';
+import { PostService } from './post.service';
+import { PostCommentService } from './post-comment.service';
+import { PostComment } from '../shared/models/post-comment.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EventSocketService {
+export class EventSocketService extends Socket {
 
-  private dataReceived = new BehaviorSubject<any>(undefined);
-  private dataReceived$ = this.dataReceived.asObservable();
+  // private dataReceived = new BehaviorSubject<any>(undefined);
+  // private dataReceived$ = this.dataReceived.asObservable();
+
+  //post like observable
+  private postLikeData = new Subject<{
+    postId: string, 
+    likes: number,
+  }>()
+  private postLikeData$ = this.postLikeData.asObservable();
+
+  //post comment observable
+  private newPostComment = new Subject<PostComment>();
+  private newPostComment$ = this.newPostComment.asObservable();
+
+  //total comment observable
+  private totalPostComment = new Subject<{
+    postId: string,
+    totalComments: number
+  }>();
+  private totalPostComment$ = this.totalPostComment.asObservable();
+
+  getNewPostLikeData(){
+    return this.postLikeData$;
+  }
+  getNewPostComment(){
+    return this.newPostComment$;
+  }
+  getNewTotalPostComment(){
+    return this.totalPostComment$;
+  }
 
   constructor(
-    private socket: Socket
+    // private postService: PostService,
+    private authService: AuthService,
+    // private postCommentService: PostCommentService,
   ) { 
-    
+    super({ url: 'http://localhost:3000', options: { 
+      autoConnect: false, 
+    } })
   }
 
-  getConnectedSocket(){
-    return this.socket;
+  // getDataReceived(){
+  //   return this.dataReceived$;
+  // }
+  // connectSocket(data: any){
+  //   this.socket.connect();
+  //   this.socket.emit('user-connected', data);
+  // }
+  // disconnectSocket(data: any){
+  //   this.socket.emit('user-disconnected', data);
+  //   this.socket.disconnect();
+  // }
+  // emitData(eventName: string, data: any){
+  //   this.socket.emit(eventName, data);
+  // }
+  // receivedEmitedData(eventName: string){
+  //   this.socket.on(eventName, (data: any) =>{
+  //     this.dataReceived.next(data);
+  //   })
+  // }
+
+  // listenToEmitEvent(eventName: string, execFunc: Function){
+  //   this.socket.on(eventName, (data: any) =>{
+  //     execFunc(data);
+  //   });
+  // }
+
+  // stopEventListener(eventName: string){
+  //   this.socket.removeListener(eventName);
+
+  // }
+
+  connectToSocket(){
+    this.connect();
+    this.setUpEventListener();
   }
-  getDataReceived(){
-    return this.dataReceived$;
+  disconnectFromSocket(){
+    this.disconnect();
+    this.removeAllListeners();
   }
-  connectSocket(data: any){
-    this.socket.connect();
-    this.socket.emit('user-connected', data);
-  }
-  disconnectSocket(data: any){
-    this.socket.emit('user-disconnected', data);
-    this.socket.disconnect();
-  }
-  emitData(eventName: string, data: any){
-    this.socket.emit(eventName, data);
-  }
-  receivedEmitedData(eventName: string){
-    this.socket.on(eventName, (data: any) =>{
-      this.dataReceived.next(data);
+
+  likePostEvent(){
+    this.on('new-like', (data: any) =>{
+      this.postLikeData.next({
+        postId: data.id,
+        likes: data.likes
+      });
     })
   }
 
-  listenToEmitEvent(eventName: string, execFunc: Function){
-    this.socket.on(eventName, (data: any) =>{
-      execFunc(data);
-    });
+  commentPostEvent(){
+    //update new comment
+    this.on('new-comment', (data: any) =>{
+      this.newPostComment.next(data);
+    })
+    //update new total comments count
+    this.on('update-total-comment', (data: any) =>{
+      console.log(data);
+      this.totalPostComment.next(data);
+    })
+  }
+  emitEvent(eventName: string, data: any, authorization: boolean = true){
+    this.emit(eventName, {data: data, accessToken: this.authService.getAuthAcessToken()});
   }
 
-  stopEventListener(eventName: string){
-    this.socket.removeListener(eventName);
-
+  setUpEventListener(){
+    this.likePostEvent();
+    this.commentPostEvent();
+    console.log('socket now listening to events');
   }
 }

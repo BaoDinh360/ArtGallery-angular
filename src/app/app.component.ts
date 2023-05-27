@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
+import { EventSocketService } from './services/event-socket.service';
 
 @Component({
   selector: 'app-root',
@@ -10,15 +11,15 @@ export class AppComponent implements OnInit {
 
   isUserSignedIn: boolean = false;
   constructor(
-    private authService : AuthService
+    private authService : AuthService,
+    private eventSocket: EventSocketService,
   ){
     this.authService.checkTokenExpiresOnStartUp();
   }
-  // getIsUserSignedIn() : boolean{
-  //   return this.isUserSignedIn;
-  // }
   ngOnInit(): void {
     this.authService.setUpCurrentUserLoginInfo();
+    //set up socket listeners
+    this.eventSocket.connectToSocket();
     this.isUserSignedIn = this.authService.isSignedIn();
   }
   

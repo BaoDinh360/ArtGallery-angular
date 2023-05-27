@@ -4,6 +4,7 @@ import { Post } from '../shared/models/post.model';
 import { PagedResponseResult, ResponseResult } from '../shared/models/responseResult';
 import { Image } from '../shared/models/image.model';
 import { CreatePost } from '../shared/models/create-post.model';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,18 @@ import { CreatePost } from '../shared/models/create-post.model';
 export class PostService {
 
   constructor(
-    private httpClient : HttpClient
+    private httpClient : HttpClient,
   ) { }
+
+  private postLikeData = new Subject<{
+    postId: string, 
+    likes: number,
+  }>();
+  private postLikeData$ = this.postLikeData.asObservable();
+
+  getNewPostLikeData(){
+    return this.postLikeData$;
+  }
 
   getAllPosts (page: number, limit: number) {
     // return this.httpClient.get<PagedResponseResult<Post>>('/api/posts');

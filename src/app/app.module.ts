@@ -17,7 +17,7 @@ import { Socket, SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { PostModule } from './post/post.module';
 
 //socket config
-const socketConfig : SocketIoConfig = { url: 'http://localhost:3000', options: { autoConnect: false, }};
+// const socketConfig : SocketIoConfig = { url: 'http://localhost:3000', options: { autoConnect: false, }};
 
 
 
@@ -43,7 +43,7 @@ const socketConfig : SocketIoConfig = { url: 'http://localhost:3000', options: {
     //Module shared
     SharedModule,
 
-    SocketIoModule.forRoot(socketConfig),
+    // SocketIoModule.forRoot(socketConfig),
   ],
   providers: [
     {

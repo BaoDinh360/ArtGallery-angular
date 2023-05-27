@@ -7,9 +7,6 @@ import { BehaviorSubject, Subject, map, tap } from 'rxjs';
 import { ResponseResult } from '../shared/models/responseResult';
 import { UserLoginInfo } from '../shared/models/userLoginModel';
 import { User, UserLoginCredentials, UserRegistration } from '../shared/models/userModel';
-import { RESPONSE_STATUS } from '../shared/models/enums';
-import { EventSocketService } from './event-socket.service';
-
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +24,8 @@ export class AuthService {
   constructor(
     private httpClient : HttpClient,
     private cookieService : CookieService,
-    private eventSocket: EventSocketService,
+    // private guestSocket: GuestSocketService,
+    // private userSocket: UserSocketService,
   ) { 
   }
 
@@ -69,7 +67,8 @@ export class AuthService {
   signOut(){
     return this.httpClient.post<ResponseResult<any>>('/api/auth/logout', {})
       .pipe(map(result =>{
-        this.eventSocket.disconnectSocket(this.cookieService.get('user-id'));
+        //disconnect from socket users namespace when sign out
+        // this.disconnectFromUserSocket();
         this.cookieService.delete('access-token');
         this.cookieService.delete('expire-at');
         this.cookieService.delete('refresh-token');
@@ -102,20 +101,37 @@ export class AuthService {
       email : this.cookieService.get('email'),
       username : this.cookieService.get('username')
     })
-    this.setUpSocketConnection();
+    // this.setUpSocketConnection();
   }
 
   getCurrentUserLoginInfo(){
     return this.currentUserLoginInfo$;
   }
 
-  setUpSocketConnection(){
-    this.currentUserLoginInfo$.subscribe(result =>{
-      if(result.id != ''){
-        this.eventSocket.connectSocket(result.id);
-      }
-    })
-  }
+  // setUpSocketConnection(){
+  //   // this.currentUserLoginInfo$.subscribe(result =>{
+  //   //   if(result.id != ''){
+  //   //     //connect to socket users namespace
+  //   //     this.userSocket.connectToSocket();
+  //   //   }
+  //   // })
+  //   //if user is already signed in, connect to socket users namespace
+  //   if(this.isSignedIn()){
+  //     this.guestSocket.disconnectFromSocket();
+  //     const accessToken = this.cookieService.get('access-token');
+  //     this.userSocket.connectToSocket(accessToken);
+  //   }
+  //   // else connect to socket guests namespace
+  //   else{
+  //     this.guestSocket.connectToSocket();
+  //   }
+  // }
+  // disconnectFromUserSocket(){
+  //   //when disconnect from socket users namespace, connect to socket guests namespace
+  //   const userId = this.cookieService.get('user-id');
+  //   this.userSocket.disconnectFromSocket(userId);
+  //   this.guestSocket.connect();
+  // }
 
   checkTokenExpiresOnStartUp(){
     //Nếu refresh token còn thời hạn

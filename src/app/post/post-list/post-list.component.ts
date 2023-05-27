@@ -17,7 +17,7 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
 
   postLists : Post[] = [];
   isUserSignedIn : boolean = false;
-  
+  currentUserLoginId!: string;
   
   constructor(
     private postService : PostService,
@@ -37,6 +37,21 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     }
   ngOnInit(): void {
     this.getAllPosts();
+    this.authService.getCurrentUserLoginInfo().subscribe(result =>{
+      this.currentUserLoginId = result.id;
+    })
+    this.updateNewPostLike();
+    this.updateTotalCommentsCount();
+    // this.postService.getNewPostLikeData().subscribe(result =>{
+    //   const postId = result.postId;
+    //   const newLikes = result.likes;
+    //   const postIndex = this.postLists.findIndex(post => post._id == postId);
+    //   if(postIndex != -1){
+    //     this.postLists[postIndex].likeCount = newLikes;
+    //     console.log( this.postLists[postIndex]);
+        
+    //   }
+    // })
     
   }
   
@@ -57,8 +72,6 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     this.isUserSignedIn =  this.authService.isSignedIn();
   }
 
-  
-
   paginateEvent(event: PageEvent){
     this.limit = event.pageSize;
     this.page = event.pageIndex + 1;
@@ -72,25 +85,40 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     }
     else{
       //emit data xuống server
-      this.eventSocket.emitData('like-events', post._id);
-      
-      this.eventSocket.receivedEmitedData('like-events');
-      this.eventSocket.getDataReceived().subscribe(result =>{
-        if(result != undefined){
-          this.UpdatePostLikesRealTime(result);
-        }   
-      })
+      this.eventSocket.emitEvent('update-like', post._id);
     }
   }
 
-  UpdatePostLikesRealTime(data: any){
-    const postIndex = this.postLists.findIndex(post => post._id == data.id);
-    if(postIndex != -1){
-      this.postLists[postIndex].likeCount = data.likes;
-      console.log(this.postLists[postIndex]);
-      
-    }
+  updateNewPostLike(){
+    this.eventSocket.getNewPostLikeData().subscribe(result =>{
+      const postId = result.postId;
+      const newLikes = result.likes;
+      const postIndex = this.postLists.findIndex(post => post._id == postId);
+      if(postIndex != -1){
+        this.postLists[postIndex].likeCount = newLikes;
+      }
+    })
   }
+
+  updateTotalCommentsCount(){
+    this.eventSocket.getNewTotalPostComment().subscribe(result =>{
+      const postId = result.postId;
+      const totalComment = result.totalComments;
+      const postIndex = this.postLists.findIndex(post => post._id == postId);
+      if(postIndex != -1){
+        this.postLists[postIndex].commentCount = totalComment;
+      }
+    })
+  }
+
+  // UpdatePostLikesRealTime(data: any){
+  //   const postIndex = this.postLists.findIndex(post => post._id == data.id);
+  //   if(postIndex != -1){
+  //     this.postLists[postIndex].likeCount = data.likes;
+  //     console.log(this.postLists[postIndex]);
+      
+  //   }
+  // }
 
   openPostDetail(post: Post){
     this.router.navigate(['/post', post.author.username, post._id]);
