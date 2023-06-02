@@ -1,13 +1,40 @@
-<div class="dialog-container">
-    <span mat-dialog-title>
-        <mat-icon color="warn">delete</mat-icon>
-        <h2>Delete post</h2>
+<div class="dialog-container" [ngSwitch]="dialogType">
+    <ng-container *ngSwitchCase="'delete'">
+        <ng-container *ngTemplateOutlet="deleteDialogTemplate"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+        <ng-container *ngTemplateOutlet="infoDialogTemplate"></ng-container>
+    </ng-container>
+</div>
+<!-- info template -->
+<ng-template #infoDialogTemplate>
+    <span class="info-title">
+        <mat-icon>info</mat-icon>
+        <h2>{{dialogTitle}}</h2>
     </span>
     <div mat-dialog-content>
-       <p>Are you sure you want to delete post: {{dataDisplay}}?</p> 
+       <p>{{dialogMessage}}</p> 
     </div>
     <div mat-dialog-actions class="dialog-actions">
-        <button mat-flat-button (click)="closeDialogAndEmitData(false)">Cancel</button>
-        <button mat-flat-button color="warn" (click)="closeDialogAndEmitData(true)">Delete</button>
+        <button *ngIf="hasCancelButton"
+            mat-flat-button (click)="closeDialogAndEmitData(false)">Cancel</button>
+        <button mat-flat-button class="info-button" 
+            (click)="closeDialogAndEmitData(true)">{{dialogButtonTitle}}</button>
     </div>
-</div>
+</ng-template>
+<!-- Delete template -->
+<ng-template #deleteDialogTemplate>
+    <span class="delete-title">
+        <mat-icon>delete</mat-icon>
+        <h2>{{dialogTitle}}</h2>
+    </span>
+    <div mat-dialog-content>
+       <p>{{dialogMessage}}</p> 
+    </div>
+    <div mat-dialog-actions class="dialog-actions">
+        <button *ngIf="hasCancelButton"
+            mat-flat-button (click)="closeDialogAndEmitData(false)">Cancel</button>
+        <button mat-flat-button class="delete-button" 
+            (click)="closeDialogAndEmitData(true)">{{dialogButtonTitle}}</button>
+    </div>
+</ng-template>

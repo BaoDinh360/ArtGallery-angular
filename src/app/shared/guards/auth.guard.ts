@@ -32,7 +32,7 @@ export class AuthGuard implements CanActivate {
   }
 
   private refreshingToken(){
-    return this.authService.refreshAccessToken(this.authService.getRefreshToken()).pipe(
+    return this.authService.refreshAccessToken().pipe(
       map(result =>{
         if(result.status === RESPONSE_STATUS.SUCCESS){
           return true;

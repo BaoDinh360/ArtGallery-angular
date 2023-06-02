@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { Router, ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
+import { DialogService } from 'src/app/services/dialog/dialog.service';
 import { PostService } from 'src/app/services/post.service';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { RESPONSE_STATUS } from 'src/app/shared/models/enums';
@@ -26,7 +27,8 @@ export class MyPostListComponent {
     private postService : PostService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private dialog: MatDialog
+    private dialogService: DialogService,
+    // private dialog: MatDialog
   ){}
 
   page: number = 1;
@@ -57,46 +59,39 @@ export class MyPostListComponent {
   }
 
   onEditPost(post: Post){
-    //post/:author/edit-post/:id
     this.router.navigate(['post', post.author.username, 'edit-post', post._id]);
   }
 
   onViewPostDetail(post: Post){
-    //post/:author/:id
-    // this.router.navigate([post.id], {relativeTo: this.activatedRoute})
     this.router.navigate(['post', post.author.username, post._id]);
   }
 
   openDeleteConfirm(post: Post) : void{
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, 
-    {
-      height : 'auto',
-      width : '30%',
-      data: post.postName
-    });
-    
+    const dialogRef = this.dialogService.showDeleteDialog(
+      `Delete post: ${post.postName}`, 'Are you sure you want to delete this post?', true);
     dialogRef.afterClosed().subscribe((result: boolean) =>{
-      if(result == false || result == undefined){
-        return;
-      }
-      else{
+      if(result == true){
         this.deletePost(post);
       }
-    });
-  }
-
-  test(data: string){
-
+    })
   }
 
   deletePost(post: Post){
     const deletedPostId = post._id;
-    this.postService.deletePost(deletedPostId).subscribe(result =>{
-      if(result.status == RESPONSE_STATUS.SUCCESS){
-        // const deletedPostIndex = this.postList.findIndex(post => post.id == deletedPostId);
-        // this.postList.splice(deletedPostIndex, 1);
-        this.postList = this.postList.filter(post => post._id == deletedPostId);
-      }
-    })
+    const postIndex = this.postList.findIndex(post => post._id == deletedPostId);
+    const pageIndex = this.postPagination.pageIndex;
+    const itemsPerPage = this.postPagination.itemsPerPage;
+    console.log(`rowIndex:${postIndex}, pageIndex:${this.postPagination.pageIndex}, pageSize:${this.postPagination.itemsPerPage}`);
+    const indexRemoved = postIndex + (pageIndex * itemsPerPage);
+    console.log(indexRemoved);
+    this.postList = this.postList.filter((post, index) => index != indexRemoved);
+    // this.postService.deletePost(deletedPostId).subscribe(result =>{
+    //   if(result.status == RESPONSE_STATUS.SUCCESS){
+    //     // const deletedPostIndex = this.postList.findIndex(post => post.id == deletedPostId);
+    //     // this.postList.splice(deletedPostIndex, 1);
+
+    //     this.postList = this.postList.filter(post => post._id == deletedPostId);
+    //   }
+    // })
   }
 }

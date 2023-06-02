@@ -2,3 +2,27 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* snack-bar */
+/* override mat-snack-bar css */
+/* Success */
+.snackbar-container{
+    max-width: 1000px;
+    --mdc-snackbar-supporting-text-size: 16px;
+    --mdc-snackbar-supporting-text-color: #fff;
+    padding: 8px;
+}
+.snackbar-info{
+    --mdc-snackbar-container-color: #6ebdeb !important;
+}
+.snackbar-success{
+    --mdc-snackbar-container-color: #4fd67c !important;
+}
+/* Error */
+.snackbar-error {
+    --mdc-snackbar-container-color: #ed483c !important;
+}
+/* Warning */
+.snackbar-warning {
+    --mdc-snackbar-container-color: #e2cd57 !important;
+}

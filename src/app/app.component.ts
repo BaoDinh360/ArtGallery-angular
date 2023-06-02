@@ -17,10 +17,15 @@ export class AppComponent implements OnInit {
     this.authService.checkTokenExpiresOnStartUp();
   }
   ngOnInit(): void {
-    this.authService.setUpCurrentUserLoginInfo();
+    // this.authService.setUpCurrentUserLoginInfo();
     //set up socket listeners
     this.eventSocket.connectToSocket();
-    this.isUserSignedIn = this.authService.isSignedIn();
+    // this.isUserSignedIn = this.authService.isSignedIn();
+    this.authService.isSignedIn().subscribe(result =>{
+      this.isUserSignedIn = result;
+    })
+    console.log(this.isUserSignedIn);
+    
   }
   
   onUserSignedIn(event: boolean){

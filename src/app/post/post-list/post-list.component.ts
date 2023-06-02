@@ -7,6 +7,9 @@ import { PageEvent } from '@angular/material/paginator';
 import { Socket } from 'ngx-socket-io';
 import { EventSocketService } from 'src/app/services/event-socket.service';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarNotificationComponent } from 'src/app/shared/components/snackbar-notification/snackbar-notification.component';
+import { SnackbarNotificationService } from 'src/app/services/snackbar-notification.service';
 
 @Component({
   selector: 'app-post-list',
@@ -16,14 +19,16 @@ import { Router } from '@angular/router';
 export class PostListComponent implements OnInit, AfterViewChecked  {
 
   postLists : Post[] = [];
-  isUserSignedIn : boolean = false;
   currentUserLoginId!: string;
-  
+  private isUserSignedIn: boolean = false;
+  screenBreakpoint!: number;
+
   constructor(
     private postService : PostService,
     private authService : AuthService,
     private eventSocket: EventSocketService,
-    private router: Router
+    private router: Router,
+    private snackBar: SnackbarNotificationService,
   ){}
 
     page: number = 1;
@@ -37,24 +42,27 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     }
   ngOnInit(): void {
     this.getAllPosts();
+    this.screenBreakpoint = this.configResponsiveGrid(window.innerWidth);
     this.authService.getCurrentUserLoginInfo().subscribe(result =>{
       this.currentUserLoginId = result.id;
     })
     this.updateNewPostLike();
     this.updateTotalCommentsCount();
-    // this.postService.getNewPostLikeData().subscribe(result =>{
-    //   const postId = result.postId;
-    //   const newLikes = result.likes;
-    //   const postIndex = this.postLists.findIndex(post => post._id == postId);
-    //   if(postIndex != -1){
-    //     this.postLists[postIndex].likeCount = newLikes;
-    //     console.log( this.postLists[postIndex]);
-        
-    //   }
-    // })
-    
+    this.authService.isSignedIn().subscribe(result =>{
+      this.isUserSignedIn = result;
+    })  
   }
   
+  configResponsiveGrid(windowWidth: number){
+    if(windowWidth <= 700) { return 1}
+    if(windowWidth <= 1000){ return 2}
+    else return 3;
+  }
+
+  onResize(event: any){
+    this.screenBreakpoint = this.configResponsiveGrid(event.target.innerWidth);
+  }
+
   getAllPosts(){
     this.postService.getAllPosts(this.page, this.limit).subscribe(result =>{
       if(result.status === RESPONSE_STATUS.SUCCESS)
@@ -69,7 +77,7 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
   }
 
   ngAfterViewChecked(): void {
-    this.isUserSignedIn =  this.authService.isSignedIn();
+    // this.isUserSignedIn =  this.authService.isSignedIn();
   }
 
   paginateEvent(event: PageEvent){
@@ -79,8 +87,8 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
   }
 
   onLikePost(post: Post){
-    if(!this.authService.isSignedIn()){
-      console.log('Login first');
+    if(!this.isUserSignedIn){
+      this.snackBar.showErrorSnackbar('Please sign in to your account to like a post');
       return;
     }
     else{
@@ -111,16 +119,9 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     })
   }
 
-  // UpdatePostLikesRealTime(data: any){
-  //   const postIndex = this.postLists.findIndex(post => post._id == data.id);
-  //   if(postIndex != -1){
-  //     this.postLists[postIndex].likeCount = data.likes;
-  //     console.log(this.postLists[postIndex]);
-      
-  //   }
-  // }
-
   openPostDetail(post: Post){
     this.router.navigate(['/post', post.author.username, post._id]);
   }
+
+  
 }

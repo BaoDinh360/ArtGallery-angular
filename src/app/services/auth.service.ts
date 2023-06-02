@@ -19,13 +19,17 @@ export class AuthService {
     username : ''
   });
 
+  private isUserSignedIn = new BehaviorSubject<boolean>(false);
+  private isUserSignedIn$ = this.isUserSignedIn.asObservable();
+
+  private accessToken!: string;
+  // private isUserSignedIn: boolean = false;
+
   private currentUserLoginInfo$ = this.currentUserLoginInfo.asObservable();
 
   constructor(
     private httpClient : HttpClient,
     private cookieService : CookieService,
-    // private guestSocket: GuestSocketService,
-    // private userSocket: UserSocketService,
   ) { 
   }
 
@@ -36,73 +40,112 @@ export class AuthService {
     return this.httpClient.post<ResponseResult<UserLoginCredentials>>('/api/auth/register', userRegistration);
   }
 
-  refreshAccessToken(refreshToken : string){
-    return this.httpClient.post<ResponseResult<any>>('/api/auth/token', {refreshToken : refreshToken})
+  // refreshAccessToken(refreshToken : string){
+  //   return this.httpClient.post<ResponseResult<any>>('/api/auth/token', {refreshToken : refreshToken})
+  //     .pipe(map(result =>{
+  //       this.storeUserLoginInfo(result.data);
+  //       this.setUpCurrentUserLoginInfo();
+  //       return result;
+  //     }))
+  // }
+
+  refreshAccessToken(){
+    return this.httpClient.post<ResponseResult<any>>('/api/auth/token', {withCredentials: true})
       .pipe(map(result =>{
-        this.storeUserLoginInfo(result.data);
-        this.setUpCurrentUserLoginInfo();
+        if(result.data != undefined){
+          this.storeUserLoginInfo(result.data.accessToken);
+        // this.setUpCurrentUserLoginInfo();
+        }
         return result;
       }))
   }
 
-  storeUserLoginInfo(userLoginInfo : UserLoginCredentials){
-    const decodedToken = jwtDecode<any>(userLoginInfo.accessToken);
-    const userLoginId = decodedToken._id;
-    const userName = decodedToken.username;
-    const email = decodedToken.email;
-    let duration = parseInt(userLoginInfo.expiredIn.split("")[0]);
-    let expiresAt = dayjs().add(duration, 'm');
-    let expireDate = expiresAt.toDate();
-    let refreshTokenDuration = parseInt(userLoginInfo.expiredIn.split("")[0]);
-    let refreshExpireDate = dayjs().add(refreshTokenDuration, 'd').toDate();
-
-    this.cookieService.set('access-token', userLoginInfo.accessToken, refreshExpireDate);
-    this.cookieService.set('expire-at', JSON.stringify(expiresAt.valueOf()), refreshExpireDate);
-    this.cookieService.set('refresh-token', userLoginInfo.refreshToken, refreshExpireDate);
-    this.cookieService.set('user-id', userLoginId, refreshExpireDate);
-    this.cookieService.set('username', userName, refreshExpireDate);
-    this.cookieService.set('email', email, refreshExpireDate);
+  storeUserLoginInfo(accessToken: string){
+    if(accessToken){
+      this.accessToken = accessToken;
+      this.isUserSignedIn.next(true);
+      try {
+        const payload = jwtDecode<any>(accessToken);
+      this.currentUserLoginInfo.next({
+        id : payload._id,
+        email : payload.email,
+        username : payload.username
+      })
+      } catch (error) {
+        console.log(error); 
+      }
+    }
+    else{
+      this.isUserSignedIn.next(false);
+    }
   }
+
+  // storeUserLoginInfo(userLoginInfo : UserLoginCredentials){
+  //   const decodedToken = jwtDecode<any>(userLoginInfo.accessToken);
+  //   const userLoginId = decodedToken._id;
+  //   const userName = decodedToken.username;
+  //   const email = decodedToken.email;
+  //   let duration = parseInt(userLoginInfo.expiredIn.split("")[0]);
+  //   let expiresAt = dayjs().add(duration, 'm');
+  //   let expireDate = expiresAt.toDate();
+  //   let refreshTokenDuration = parseInt(userLoginInfo.expiredIn.split("")[0]);
+  //   let refreshExpireDate = dayjs().add(refreshTokenDuration, 'd').toDate();
+
+  //   this.cookieService.set('access-token', userLoginInfo.accessToken, refreshExpireDate);
+  //   this.cookieService.set('expire-at', JSON.stringify(expiresAt.valueOf()), refreshExpireDate);
+  //   this.cookieService.set('refresh-token', userLoginInfo.refreshToken, refreshExpireDate);
+  //   this.cookieService.set('user-id', userLoginId, refreshExpireDate);
+  //   this.cookieService.set('username', userName, refreshExpireDate);
+  //   this.cookieService.set('email', email, refreshExpireDate);
+  // }
+
+  // signOut(){
+  //   return this.httpClient.post<ResponseResult<any>>('/api/auth/logout', {})
+  //     .pipe(map(result =>{
+  //       //disconnect from socket users namespace when sign out
+  //       // this.disconnectFromUserSocket();
+  //       this.cookieService.delete('access-token');
+  //       this.cookieService.delete('expire-at');
+  //       this.cookieService.delete('refresh-token');
+  //       this.cookieService.delete('user-id');
+  //       this.cookieService.delete('username');
+  //       this.cookieService.delete('email');
+  //       return result;
+  //     }));
+  // }
 
   signOut(){
-    return this.httpClient.post<ResponseResult<any>>('/api/auth/logout', {})
-      .pipe(map(result =>{
-        //disconnect from socket users namespace when sign out
-        // this.disconnectFromUserSocket();
-        this.cookieService.delete('access-token');
-        this.cookieService.delete('expire-at');
-        this.cookieService.delete('refresh-token');
-        this.cookieService.delete('user-id');
-        this.cookieService.delete('username');
-        this.cookieService.delete('email');
-        return result;
-      }));
-    
+    return this.httpClient.post<ResponseResult<any>>('/api/auth/logout', {});
   }
+
+  // isSignedIn(){
+  //   // if(this.getExpiration() == undefined){
+  //   //   return false;
+  //   // }
+  //   // return dayjs().isBefore(this.getExpiration());
+  //   // if(this.cookieService.get('expire-at') != ''){
+  //   //   return true;
+  //   // }
+  //   // return false;
+  //   return this.isUserSignedIn;
+  // }
+
+  // isSignedOut(){
+  //   return !this.isSignedIn();
+  // }
 
   isSignedIn(){
-    // if(this.getExpiration() == undefined){
-    //   return false;
-    // }
-    // return dayjs().isBefore(this.getExpiration());
-    if(this.cookieService.get('expire-at') != ''){
-      return true;
-    }
-    return false;
+    return this.isUserSignedIn$;
   }
 
-  isSignedOut(){
-    return !this.isSignedIn;
-  }
-
-  setUpCurrentUserLoginInfo(){
-    this.currentUserLoginInfo.next({
-      id : this.cookieService.get('user-id'),
-      email : this.cookieService.get('email'),
-      username : this.cookieService.get('username')
-    })
-    // this.setUpSocketConnection();
-  }
+  // setUpCurrentUserLoginInfo(){
+  //   this.currentUserLoginInfo.next({
+  //     id : this.cookieService.get('user-id'),
+  //     email : this.cookieService.get('email'),
+  //     username : this.cookieService.get('username')
+  //   })
+  //   // this.setUpSocketConnection();
+  // }
 
   getCurrentUserLoginInfo(){
     return this.currentUserLoginInfo$;
@@ -135,29 +178,36 @@ export class AuthService {
 
   checkTokenExpiresOnStartUp(){
     //Nếu refresh token còn thời hạn
-    if(this.getRefreshToken() != ''){
-      //nếu access token đã hết hạn --> request lấy access token mới
-      const refreshToken = this.cookieService.get('refresh-token');
-      if(this.getAuthAcessToken() == ''){
-        this.refreshAccessToken(refreshToken).subscribe();
-      }
+    // if(this.getRefreshToken() != ''){
+    //   //nếu access token đã hết hạn --> request lấy access token mới
+    //   const refreshToken = this.getRefreshToken();
+    //   if(this.getAuthAcessToken() == ''){
+    //     this.refreshAccessToken(refreshToken).subscribe();
+    //   }
+    // }
+    const accessToken = this.getAuthAcessToken();
+    if(accessToken == undefined || accessToken == ''){
+      this.refreshAccessToken().subscribe();
     }
   }
 
+  // getAuthAcessToken() {
+  //   return this.cookieService.get('access-token');
+  // }
   getAuthAcessToken() {
-    return this.cookieService.get('access-token');
+    return this.accessToken;
   }
 
   getRefreshToken(){
-    return this.cookieService.get('refresh-token');
+    return this.cookieService.get('jwt-refresh');
   }
 
-  getExpiration(){
-    const expiration = this.cookieService.get('expire-at');
-    if(expiration != ''){
-      const expiredAt = JSON.parse(expiration);
-      return dayjs(expiredAt);
-    }
-    return undefined;
-  }
+  // getExpiration(){
+  //   const expiration = this.cookieService.get('expire-at');
+  //   if(expiration != ''){
+  //     const expiredAt = JSON.parse(expiration);
+  //     return dayjs(expiredAt);
+  //   }
+  //   return undefined;
+  // }
 }

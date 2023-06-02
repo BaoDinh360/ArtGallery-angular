@@ -12,12 +12,13 @@ export class AuthInterceptor implements HttpInterceptor{
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const authAccessToken = this.authService.getAuthAcessToken();
+        //Access token found
         if(authAccessToken){
             //Clone req và thêm authorization bearer vào header nếu đã login 
             const clonedReq = this.addTokenToHeader(req, authAccessToken);
             // return next.handle(clonedReq);
             return next.handle(clonedReq).pipe(catchError(err =>{
-                //Trong TH accessToken hết hạn, lấy lại access token mới
+                //If access token expired, request new access token
                 if(err instanceof HttpErrorResponse && err.status === 401){
                     return this.handle401Error(req, next);
                 }
@@ -26,8 +27,16 @@ export class AuthInterceptor implements HttpInterceptor{
                 }
             }));
         }
-        //trả về req bth 
-        else return next.handle(req);
+        //No access token found
+        else return next.handle(req).pipe(catchError(err =>{
+            //If access token expired, request new access token
+            if(err instanceof HttpErrorResponse && err.status === 401){
+                return this.handle401Error(req, next);
+            }
+            else{
+                return throwError(err);
+            }
+        }));
     }
 
     private addTokenToHeader(req: HttpRequest<any>, accessToken : string){
@@ -45,7 +54,7 @@ export class AuthInterceptor implements HttpInterceptor{
             this.isRefreshing = true;
             this.refreshTokenSubject.next(null);
 
-            return this.authService.refreshAccessToken(this.authService.getRefreshToken()).pipe(
+            return this.authService.refreshAccessToken().pipe(
                 switchMap(result =>{
                     this.isRefreshing = false;
                     this.refreshTokenSubject.next(result.data.accessToken);

@@ -1,8 +1,17 @@
 <div class="auth-container">
     <span mat-dialog-title>{{authType}}</span>
     <span>
-        <a *ngIf="authType == 'Sign in'" href="" class="login-link">Create an account</a>
-        <a *ngIf="authType == 'Sign up'" href="" class="login-link">Already have an account?</a>
+        <!-- <a *ngIf="authType == 'Sign in'" href="" class="login-link">Create an account</a>
+        <a *ngIf="authType == 'Sign up'" href="" class="login-link">Already have an account?</a> -->
+        <button *ngIf="authType == 'Sign in'" 
+            mat-flat-button color="primary" (click)="switchAuthType('Sign up')">
+            Create an account
+        </button>
+        <!-- <a *ngIf="authType == 'Sign up'" href="" class="login-link">Already have an account?</a> -->
+        <button *ngIf="authType == 'Sign up'" 
+            mat-flat-button color="primary" (click)="switchAuthType('Sign in')">
+            Already have an account? Sign in now
+        </button>
     </span>
     <form novalidate (ngSubmit)="onSubmit()" [formGroup]="authForm">
         <div mat-dialog-content class="auth-form-container">
@@ -42,9 +51,6 @@
                     Please enter your password
                 </mat-error>
             </mat-form-field>
-            <div *ngIf="authType == 'Sign in'">
-                <mat-error *ngIf="isSignInError">{{errorMsg}}</mat-error>
-            </div>
 
         </div>
         <div mat-dialog-actions class="auth-form-button">

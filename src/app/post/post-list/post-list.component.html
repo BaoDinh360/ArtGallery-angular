@@ -1,7 +1,7 @@
 
 <div>
     <div>
-        <mat-grid-list cols="3" rowHeight="1:1.2" [gutterSize]="'16px'">
+        <mat-grid-list [cols]="screenBreakpoint" rowHeight="1:1.2" [gutterSize]="'16px'" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let post of postLists; let i = index">
                 <mat-card class="card-container">
                     <mat-card-header>

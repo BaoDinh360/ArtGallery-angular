@@ -9,10 +9,10 @@
             <a routerLink="/" class="button-link">Home</a>
             <button *ngIf="!isUserSignedIn" 
                 mat-flat-button color="accent" 
-                (click)="openForm('Sign in')">Sign in</button>
+                (click)="openAuthForm('Sign in')">Sign in</button>
             <button *ngIf="!isUserSignedIn" 
                 mat-flat-button 
-                (click)="openForm('Sign up')">Sign up</button>
+                (click)="openAuthForm('Sign up')">Sign up</button>
             <app-user-dialog *ngIf="isUserSignedIn" 
                 (signOutEvent)="userSignOut($event)">
             </app-user-dialog>

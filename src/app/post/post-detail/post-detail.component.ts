@@ -8,6 +8,7 @@ import { PostComment } from 'src/app/shared/models/post-comment.model';
 import { PostCommentService } from 'src/app/services/post-comment.service';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
+import { SnackbarNotificationService } from 'src/app/services/snackbar-notification.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -20,12 +21,14 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   commentForm: FormGroup;
   postCommentsList!: PostComment[];
   postComments$!: Observable<PostComment[]>;
+  private isUserSignedIn: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private postService: PostService,
     private eventSocket: EventSocketService,
     private postCommentService: PostCommentService,
     private authService: AuthService,
+    private snackBar: SnackbarNotificationService
   ){
     this.commentForm = new FormGroup({
       commentControl: new FormControl('')
@@ -38,16 +41,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(param =>{
       this.postId = param['id'];
       this.getPostDetailById(this.postId);
-      // this.postCommentService.receiveNewComment();
+    })
+    this.authService.isSignedIn().subscribe(result =>{
+      this.isUserSignedIn = result;
     })
     this.updateNewPostLikeData();
     this.updateNewPostCommentData();
     this.updateTotalPostCommentCount();
-    // this.postCommentService.newComment$.subscribe(result =>{
-    //   if(result != undefined){
-    //     this.postCommentsList = [...this.postCommentsList, result];
-    //   }
-    // })
   }
 
   getPostDetailById(id: string){
@@ -60,8 +60,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   }
 
   onLikePost(){
-    if(!this.authService.isSignedIn()){
-      console.log('Login first');
+    if(!this.isUserSignedIn){
+      this.snackBar.showErrorSnackbar('Please sign in to your account to like a post');
       return;
     }
     else{
@@ -71,8 +71,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   }
 
   onComment(){
-    if(!this.authService.isSignedIn()){
-      console.log('Login first');
+    if(!this.isUserSignedIn){
+      this.snackBar.showErrorSnackbar('Please sign in to your account to comment');
       return;
     }
     const commentData ={

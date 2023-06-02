@@ -1,5 +1,6 @@
-<button mat-icon-button [matMenuTriggerFor]="userDialog">
-    <mat-icon>account_box</mat-icon>
+<button mat-icon-button [matMenuTriggerFor]="userDialog" *ngIf="currentUserLoginInfo != undefined">
+    <!-- <mat-icon>account_box</mat-icon> -->
+    <img matListItemAvatar src="{{currentUserLoginInfo.avatar.path}}"/>
 </button>
 
 <mat-menu #userDialog="matMenu">

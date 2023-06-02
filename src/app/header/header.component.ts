@@ -5,6 +5,7 @@ import { AuthenticateComponent } from '../authenticate/authenticate.component';
 import { AuthService } from '../services/auth.service';
 import { UserDialogComponent } from '../user/user-dialog/user-dialog.component';
 import { EventSocketService } from '../services/event-socket.service';
+import { DialogService } from '../services/dialog/dialog.service';
 
 @Component({
   selector: 'app-header',
@@ -24,6 +25,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     public dialog : MatDialog,
     private authService : AuthService,
     private router : Router,
+    private dialogService: DialogService,
   ){
 
   }
@@ -35,40 +37,44 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if(this.router.getCurrentNavigation()?.extras.state != undefined){
-      this.openSignIn = this.router.getCurrentNavigation()?.extras.state?.['openSignIn']
-      console.log(this.openSignIn);
+    // if(this.router.getCurrentNavigation()?.extras.state != undefined){
+    //   this.openSignIn = this.router.getCurrentNavigation()?.extras.state?.['openSignIn']
+    //   console.log(this.openSignIn);
       
-    }
-    if(this.openSignIn){
-      this.openForm('Sign in');
-    }
+    // }
+    // if(this.openSignIn){
+    //   this.openForm('Sign in');
+    // }
   }
 
-  openForm(authType : string) : void{
-    const dialogRef = this.dialog.open(AuthenticateComponent, 
-      {
-        height : 'auto',
-        width : '40%',
-        data : {authType : authType}
-      });
+  openAuthForm(authType : string) : void{
+    // const dialogRef = this.dialog.open(AuthenticateComponent, 
+    //   {
+    //     height : 'auto',
+    //     width : '40%',
+    //     data : {authType : authType}
+    //   });
     
+    // dialogRef.afterClosed().subscribe(result =>{
+    //   if(result == undefined){
+    //     return;
+    //   }
+    //   else{
+    //     if(result.event == 'Signed in'){
+    //       // this.isUserSignedIn = result.data.isSignedIn;
+    //       this.userSignInEvent.emit(result.data.isSignedIn);
+    //     }
+    //   }
+    // })
+    const dialogRef = this.dialogService.showAuthDialog(authType);
     dialogRef.afterClosed().subscribe(result =>{
-      if(result == undefined){
-        return;
+      if(result != undefined && result.event == 'Signed in'){
+        this.userSignInEvent.emit(result.data.isSignedIn);
       }
-      else{
-        if(result.event == 'Signed in'){
-          // this.isUserSignedIn = result.data.isSignedIn;
-          this.userSignInEvent.emit(result.data.isSignedIn);
-        }
-      }
-      
     })
   }
 
   userSignOut(event : boolean) : void{
-    // this.isUserSignedIn = event;
     this.userSignInEvent.emit(event);
   }
 

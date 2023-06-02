@@ -15,6 +15,7 @@ import { MaterialModule } from './material-ui/material.module';
 import { SharedModule } from './shared/shared.module';
 import { Socket, SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { PostModule } from './post/post.module';
+import { HttpErrorInterceptor } from './shared/interceptors/http-error.interceptor';
 
 //socket config
 // const socketConfig : SocketIoConfig = { url: 'http://localhost:3000', options: { autoConnect: false, }};
@@ -48,6 +49,9 @@ import { PostModule } from './post/post.module';
   providers: [
     {
       provide : HTTP_INTERCEPTORS, useClass : AuthInterceptor, multi:true
+    },
+    {
+      provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true
     },
     CookieService,
   ],

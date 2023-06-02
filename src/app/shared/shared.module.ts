@@ -5,6 +5,7 @@ import { AlertComponent } from './components/alert/alert.component';
 import { MaterialModule } from '../material-ui/material.module';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { CommentListComponent } from './components/comment-list/comment-list.component';
+import { SnackbarNotificationComponent } from './components/snackbar-notification/snackbar-notification.component';
 
 
 
@@ -14,6 +15,7 @@ import { CommentListComponent } from './components/comment-list/comment-list.com
     AlertComponent,
     ConfirmDialogComponent,
     CommentListComponent,
+    SnackbarNotificationComponent,
   ],
   imports: [
     CommonModule,
