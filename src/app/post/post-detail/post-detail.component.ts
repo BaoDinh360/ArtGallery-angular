@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DoCheck, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Post } from '../../shared/models/post.model';
 import { PostService } from 'src/app/services/post.service';
@@ -15,12 +15,14 @@ import { SnackbarNotificationService } from 'src/app/services/snackbar-notificat
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.css']
 })
-export class PostDetailComponent implements OnInit, OnDestroy {
+export class PostDetailComponent implements OnInit, OnDestroy, DoCheck {
   postId!: string;
   post!: Post;
   commentForm: FormGroup;
   postCommentsList!: PostComment[];
   postComments$!: Observable<PostComment[]>;
+  isPostAlreadyLiked: boolean = false;
+  currentUserLoginId!: string;
   private isUserSignedIn: boolean = false;
   constructor(
     private route: ActivatedRoute,
@@ -45,9 +47,17 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     this.authService.isSignedIn().subscribe(result =>{
       this.isUserSignedIn = result;
     })
+    this.authService.getCurrentUserLoginInfo().subscribe(result =>{
+      this.currentUserLoginId = result.id;
+      // this.isPostAlreadyLiked = this.checkIfCurrentUserLikedPost();
+    })
     this.updateNewPostLikeData();
     this.updateNewPostCommentData();
     this.updateTotalPostCommentCount();
+  }
+
+  ngDoCheck(): void {
+    
   }
 
   getPostDetailById(id: string){
@@ -55,18 +65,36 @@ export class PostDetailComponent implements OnInit, OnDestroy {
       this.post = result.data;
       this.postCommentService.getPostComments(id).subscribe(result =>{
         this.postCommentsList = result.data;
+
+        this.isPostAlreadyLiked = this.checkIfCurrentUserLikedPost();
       })
     })
   }
 
+  checkIfCurrentUserLikedPost(){
+    if(this.currentUserLoginId == undefined || this.currentUserLoginId == '') return false;
+    else{
+      const result = this.post.userLikedPost?.find(user => user == this.currentUserLoginId);
+      if(result == undefined) return false;
+    }
+    return true;
+  }
+
   onLikePost(){
     if(!this.isUserSignedIn){
-      this.snackBar.showErrorSnackbar('Please sign in to your account to like a post');
+      this.snackBar.showErrorSnackbar('Please sign in to your account to like post');
       return;
     }
     else{
       //emit data to server
-      this.eventSocket.emitEvent('update-like', this.post._id);
+      if(!this.isPostAlreadyLiked){
+        this.eventSocket.emitEvent('new-like', this.post._id);
+        this.isPostAlreadyLiked = true;
+      }
+      else{
+        this.eventSocket.emitEvent('unlike', this.post._id);
+        this.isPostAlreadyLiked = false;
+      }
     }
   }
 

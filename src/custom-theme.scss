@@ -1,0 +1,79 @@
+//custom material ui theme
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+/*===============CUSTOM THEME=========================*/
+
+$my-primary: mat.define-palette(mat.$purple-palette, 400, 100, 700);
+$my-accent: mat.define-palette(mat.$light-blue-palette, 400, 100, 600);
+$my-warn: mat.define-palette(mat.$pink-palette, 500, 100, 600);
+$my-success: mat.define-palette(mat.$green-palette, A400);
+$my-error: mat.define-palette(mat.$red-palette, 600, 100, 800);
+$my-neutral: mat.define-palette(mat.$blue-grey-palette);
+
+//create custom theme
+$my-theme: mat.define-light-theme((
+    color:(
+        primary: $my-primary,
+        accent: $my-accent,
+        warn: $my-warn
+    ),
+    typography: mat.define-typography-config(),
+    density: 0
+));
+
+@include mat.core-theme($my-theme);
+@include mat.all-component-themes($my-theme);
+
+
+:root{
+    --color-primary: #{mat.get-color-from-palette($my-primary)};
+    --color-accent: #{mat.get-color-from-palette($my-accent)};
+    --color-warn: #{mat.get-color-from-palette($my-warn)};
+    --color-success: #{mat.get-color-from-palette($my-success)};
+    --color-error: #{mat.get-color-from-palette($my-error)};
+
+    --primary-container: #{mat.get-color-from-palette($my-primary, 100)};
+    --on-primary-container: #{mat.get-color-from-palette($my-primary, 900)};
+
+    --accent-container: #{mat.get-color-from-palette($my-accent, 100)};
+    --on-accent-container: #{mat.get-color-from-palette($my-accent, 900)};
+
+    --warn-container: #{mat.get-color-from-palette($my-warn, 100)};
+    --on-warn-container: #{mat.get-color-from-palette($my-warn, 600)};
+
+    --neutral-container: #{mat.get-color-from-palette($my-neutral, 50)};
+    --on-neutral-container: #{mat.get-color-from-palette($my-neutral, 800)};
+}
+
+//===============CUSOTM CSS CLASS USING PALETTE===================
+// //primary-color
+// .primary-color{
+//     color: mat.get-color-from-palette($my-primary);
+//     background-color: mat.get-color-from-palette($my-primary);
+// }
+// //primary bg
+// .primary-container{
+//     background-color: mat.get-color-from-palette($my-primary, 100);
+// }
+// //content on primary-bg
+// .on-primary-container{
+//     color: mat.get-color-from-palette($my-primary, 900);
+// }
+// //secondary bg
+// .secondary-container{
+//     background-color: mat.get-color-from-palette($my-accent, 100);
+// }
+// //text on secondary bg
+// .on-secondary-container{
+//     color: mat.get-color-from-palette($my-accent, 900);
+// }
+// //neutral bg
+// .neutral-container{
+//     background-color: mat.get-color-from-palette(mat.$blue-grey-palette, 50);
+// }
+// //text on neutral bg
+// .on-neutral-container{
+//     background-color: mat.get-color-from-palette(mat.$blue-grey-palette, 800);
+// }

@@ -6,6 +6,7 @@
     height: 60%;
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
     padding: 32px 16px;
+    background-color: var(--cotainer-bg-color);
 }
 .img-outer-container{
     width: 100%;
@@ -13,7 +14,7 @@
     max-height: 400px;
 }
 .img-container{
-    background-color: rgb(255, 255, 255);
+    /* background-color: #f3f2f2; */
     width: 100%;
     /* max-width: 800px; */
     height: auto;

@@ -16,8 +16,10 @@ export class EventSocketService extends Socket {
 
   //post like observable
   private postLikeData = new Subject<{
+    type: string,
     postId: string, 
     likes: number,
+    userId: string,
   }>()
   private postLikeData$ = this.postLikeData.asObservable();
 
@@ -93,10 +95,12 @@ export class EventSocketService extends Socket {
   }
 
   likePostEvent(){
-    this.on('new-like', (data: any) =>{
+    this.on('like-update', (data: any) =>{
       this.postLikeData.next({
+        type: data.type,
         postId: data.id,
-        likes: data.likes
+        likes: data.likes,
+        userId: data.userId
       });
     })
   }

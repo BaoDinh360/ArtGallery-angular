@@ -4,12 +4,12 @@
         <!-- <a *ngIf="authType == 'Sign in'" href="" class="login-link">Create an account</a>
         <a *ngIf="authType == 'Sign up'" href="" class="login-link">Already have an account?</a> -->
         <button *ngIf="authType == 'Sign in'" 
-            mat-flat-button color="primary" (click)="switchAuthType('Sign up')">
+            mat-flat-button color="accent" (click)="switchAuthType('Sign up')">
             Create an account
         </button>
         <!-- <a *ngIf="authType == 'Sign up'" href="" class="login-link">Already have an account?</a> -->
         <button *ngIf="authType == 'Sign up'" 
-            mat-flat-button color="primary" (click)="switchAuthType('Sign in')">
+            mat-flat-button color="accent" (click)="switchAuthType('Sign in')">
             Already have an account? Sign in now
         </button>
     </span>

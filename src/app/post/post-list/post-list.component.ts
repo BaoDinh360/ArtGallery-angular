@@ -22,6 +22,7 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
   currentUserLoginId!: string;
   private isUserSignedIn: boolean = false;
   screenBreakpoint!: number;
+  isPostLiked: boolean = false;
 
   constructor(
     private postService : PostService,
@@ -45,6 +46,8 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     this.screenBreakpoint = this.configResponsiveGrid(window.innerWidth);
     this.authService.getCurrentUserLoginInfo().subscribe(result =>{
       this.currentUserLoginId = result.id;
+      console.log(this.currentUserLoginId);
+      
     })
     this.updateNewPostLike();
     this.updateTotalCommentsCount();
@@ -86,14 +89,44 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     this.getAllPosts();
   }
 
-  onLikePost(post: Post){
+  checkIsPostLiked(post: Post){
     if(!this.isUserSignedIn){
-      this.snackBar.showErrorSnackbar('Please sign in to your account to like a post');
+      return false;
+    }
+    else{
+      const userLiked = post.userLikedPost?.find(user => user == this.currentUserLoginId);
+      if(userLiked == undefined){
+        return false;
+      }
+      else return true;
+    }
+  }
+
+  // onLikePost(post: Post){
+  //   if(!this.isUserSignedIn){
+  //     this.snackBar.showErrorSnackbar('Please sign in to your account to like a post');
+  //     return;
+  //   }
+  //   else{
+  //     //emit data xuống server
+  //     this.eventSocket.emitEvent('new-like', post._id);
+  //   }
+  // }
+
+  onLikeOrUnlikePost(post: Post, eventName: string){
+    if(!this.isUserSignedIn){
+      this.snackBar.showErrorSnackbar('Please sign in to your account to like post');
       return;
     }
     else{
-      //emit data xuống server
-      this.eventSocket.emitEvent('update-like', post._id);
+      //emit like post event
+      if(eventName == 'like-post'){
+        this.eventSocket.emitEvent('new-like', post._id);
+      }
+      else if(eventName == 'unlike-post'){
+        this.eventSocket.emitEvent('unlike', post._id);
+      }
+      
     }
   }
 
@@ -101,9 +134,19 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     this.eventSocket.getNewPostLikeData().subscribe(result =>{
       const postId = result.postId;
       const newLikes = result.likes;
+      const userId = result.userId;
+      const type = result.type;
       const postIndex = this.postLists.findIndex(post => post._id == postId);
       if(postIndex != -1){
         this.postLists[postIndex].likeCount = newLikes;
+        //if a user like post, push that userId to userLikedPost
+        if(type == 'like'){
+          this.postLists[postIndex].userLikedPost = [...(this.postLists[postIndex].userLikedPost || []), userId];
+        }
+        //else if a user unlike post, remove that userId
+        else if(type == 'unlike'){
+          this.postLists[postIndex].userLikedPost = this.postLists[postIndex].userLikedPost?.filter(user => user != userId);
+        }
       }
     })
   }
@@ -123,5 +166,22 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     this.router.navigate(['/post', post.author.username, post._id]);
   }
 
-  
+  handleEmittedEvent(dataEmitted: any){
+    const {eventName, post} = dataEmitted;
+    switch(eventName){
+      //like post
+      case 'like-post':
+        this.onLikeOrUnlikePost(post, 'like-post');
+        break;
+      case 'unlike-post':
+        this.onLikeOrUnlikePost(post, 'unlike-post');
+        break;
+      //view post detail
+      case 'open-detail':
+        this.openPostDetail(post);
+        break;
+      default:
+        break;
+    }
+  }
 }

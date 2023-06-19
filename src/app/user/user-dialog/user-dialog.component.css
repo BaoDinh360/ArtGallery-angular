@@ -3,3 +3,11 @@
     max-width: 240px;
     height: auto;
 }
+.user-avatar-button{
+    transform: scale(1);
+    /* background-color: #fff; */
+}
+.user-avatar{
+    border-radius: 50%;
+    transform: scale(1.4);
+}

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { PageEvent } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
 import { DialogService } from 'src/app/services/dialog/dialog.service';
@@ -23,12 +24,12 @@ export class MyPostListComponent {
     pageIndex: number,
     totalPage: number,
   }
+
   constructor(
     private postService : PostService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private dialogService: DialogService,
-    // private dialog: MatDialog
   ){}
 
   page: number = 1;
@@ -42,6 +43,7 @@ export class MyPostListComponent {
     this.postService.getPostsByCurrentUser(this.page, this.limit).subscribe(result =>{
       if(result.status === RESPONSE_STATUS.SUCCESS){
         this.postList = result.data.items;
+        
         this.postPagination = {
           totalCount: result.data.totalCount,
           itemsPerPage: result.data.itemsPerPage,
@@ -78,20 +80,10 @@ export class MyPostListComponent {
 
   deletePost(post: Post){
     const deletedPostId = post._id;
-    const postIndex = this.postList.findIndex(post => post._id == deletedPostId);
-    const pageIndex = this.postPagination.pageIndex;
-    const itemsPerPage = this.postPagination.itemsPerPage;
-    console.log(`rowIndex:${postIndex}, pageIndex:${this.postPagination.pageIndex}, pageSize:${this.postPagination.itemsPerPage}`);
-    const indexRemoved = postIndex + (pageIndex * itemsPerPage);
-    console.log(indexRemoved);
-    this.postList = this.postList.filter((post, index) => index != indexRemoved);
-    // this.postService.deletePost(deletedPostId).subscribe(result =>{
-    //   if(result.status == RESPONSE_STATUS.SUCCESS){
-    //     // const deletedPostIndex = this.postList.findIndex(post => post.id == deletedPostId);
-    //     // this.postList.splice(deletedPostIndex, 1);
-
-    //     this.postList = this.postList.filter(post => post._id == deletedPostId);
-    //   }
-    // })
+    this.postService.deletePost(deletedPostId).subscribe(result =>{
+      if(result.status == RESPONSE_STATUS.SUCCESS){
+        this.getPostByCurrentUser();
+      }
+    })
   }
 }

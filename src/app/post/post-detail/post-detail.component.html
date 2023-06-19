@@ -6,10 +6,18 @@
         <div class="post-info-container">
             <div class="post-action">
                 <div class="post-button">
-                    <button mat-stroked-button color="warn" (click)="onLikePost()">
+                    <!-- <button mat-flat-button color="warn" (click)="onLikePost()">
                         <mat-icon>favorite</mat-icon>
                         Like
-                    </button>
+                    </button> -->
+                    <ng-container [ngSwitch]="isPostAlreadyLiked">
+                        <ng-container *ngSwitchCase="true">
+                            <ng-container *ngTemplateOutlet="alreadyLiked"></ng-container>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            <ng-container *ngTemplateOutlet="notLiked"></ng-container>
+                        </ng-container>
+                    </ng-container>
                 </div>
                 <form novalidate (submit)="onComment()" [formGroup]="commentForm">
                     <mat-form-field style="width: 100%;">
@@ -51,3 +59,16 @@
         </div>
     </div>
 </div>
+
+<ng-template #alreadyLiked>
+    <button mat-flat-button color="warn" (click)="onLikePost()">
+        <mat-icon>favorite</mat-icon>
+        Liked
+    </button>
+</ng-template>
+<ng-template #notLiked>
+    <button mat-stroked-button color="warn" (click)="onLikePost()">
+        <mat-icon>favorite</mat-icon>
+        Like
+    </button>
+</ng-template>

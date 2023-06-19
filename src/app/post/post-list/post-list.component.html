@@ -3,36 +3,51 @@
     <div>
         <mat-grid-list [cols]="screenBreakpoint" rowHeight="1:1.2" [gutterSize]="'16px'" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let post of postLists; let i = index">
-                <mat-card class="card-container">
-                    <mat-card-header>
-                        <!-- <div mat-card-avatar class="card-avatar"></div> -->
-                        <img *ngIf="post != undefined" mat-card-avatar src="{{post.author.avatar.path}}"/>
-                        <mat-card-title>{{post.author.username}}</mat-card-title>
-                        <mat-card-subtitle>{{post.createdAt | date : 'dd/MM/yyyy HH:mm:ss'}}</mat-card-subtitle>
-                    </mat-card-header>
+                <app-post-list-item [post]="post" [currentUserLoginId]="currentUserLoginId"
+                    (postEmitEvent)="handleEmittedEvent($event)">
+                </app-post-list-item>
+                <!-- <mat-card class="card-container">
                     <div class="img-container" (click)="openPostDetail(post)">
                         <img class="post-img" *ngIf="post.postImage!== undefined" mat-card-image src="{{post.postImage}}">
                     </div>
                     
                     <mat-card-content class="card-content">
-                        <div>
+                        <div class="card-primary-title">
                             <h2>{{post.postName}}</h2>
+                            <div class="post-author-info">
+                                <img *ngIf="post != undefined" class="author-avatar" src="{{post.author.avatar.path}}"/>
+                                <mat-card-subtitle>
+                                    by
+                                    <span class="author-name">
+                                        {{post.author.username}}
+                                    </span>
+                                </mat-card-subtitle>
+                                <mat-card-subtitle class="post-date">{{post.createdAt | date : 'dd/MM/yyyy HH:mm:ss'}}</mat-card-subtitle>
+                            </div>
                         </div>
                         <mat-divider></mat-divider>
                     </mat-card-content>
-                    <mat-card-actions class="card-button">
-                        <button mat-stroked-button color="warn" 
-                            (click)="onLikePost(post)">
-                            <mat-icon>favorite</mat-icon>
-                            {{post.likeCount || 0}}
-                        </button>
-                        <button mat-flat-button color="primary"
-                            (click)="openPostDetail(post)">
-                            <mat-icon>comment</mat-icon>
-                            {{post.commentCount}}
-                        </button>
+                    <mat-card-actions>
+                        <div class="post-stats">
+                            <span>
+                                {{post.likeCount || 0}} likes
+                            </span>
+                            <span>
+                                {{post.commentCount}} comments
+                            </span>
+                        </div>
+                        <div class="card-actions">
+                            <button mat-icon-button color="warn" class="card-icon"
+                                (click)="onLikePost(post)">
+                                <mat-icon>favorite_border</mat-icon>
+                            </button>
+                            <button mat-button color="primary" class="text-button"
+                                (click)="openPostDetail(post)">
+                                View post
+                            </button>
+                        </div>
                     </mat-card-actions>
-                </mat-card>
+                </mat-card> -->
             </mat-grid-tile>
         </mat-grid-list>
     </div>
@@ -46,25 +61,8 @@
         (page)="paginateEvent($event)"
         aria-label="Select page">
     </mat-paginator>
-    <!-- <mat-card class="card-container" *ngFor="let post of postLists; let i = index">
-        <mat-card-header>
-            <div mat-card-avatar class="card-avatar"></div>
-            <mat-card-title>{{post.author.username}}</mat-card-title>
-            <mat-card-subtitle>{{post.updatedAt | date : 'dd/MM/yyyy HH:mm:ss'}}</mat-card-subtitle>
-        </mat-card-header>
-        <img *ngIf="post.postImage!== undefined" mat-card-image src="{{post.postImageUrl}}">
-        <mat-card-content class="card-content">
-            <div>
-                <h2>{{post.postName}}</h2>
-                <p>{{post.description}}</p>
-            </div>
-            <mat-divider></mat-divider>
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-button>Like</button>
-            <button mat-button>Comment</button>
-        </mat-card-actions>
-    </mat-card> -->
 </div>
+
+
 
 

@@ -8,6 +8,7 @@ import { PostEditComponent } from "./post-edit/post-edit.component";
 import { MyPostListComponent } from './my-post-list/my-post-list.component';
 import { PostDetailComponent } from "./post-detail/post-detail.component";
 import { PostRoutingModule } from "./post-routing.module";
+import { PostListItemComponent } from './post-list/post-list-item/post-list-item.component';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { PostRoutingModule } from "./post-routing.module";
         PostEditComponent,
         MyPostListComponent,
         PostDetailComponent,
+        PostListItemComponent,
       ],
       imports: [
         PostRoutingModule,

@@ -1,7 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
 
+:root{
+    /* global css var */
+    --input-bg-color: #fff;
+    --input-bg-focused: rgba(0, 0, 0, 0.2);
+    --cotainer-bg-color: #fff;
+    --light-grey-bg: #f3f2f2;
+}
+
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: var(--light-grey-bg); }
+
 
 /* snack-bar */
 /* override mat-snack-bar css */
@@ -13,16 +22,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     padding: 8px;
 }
 .snackbar-info{
-    --mdc-snackbar-container-color: #6ebdeb !important;
+    --mdc-snackbar-container-color: var(--color-accent) !important;
 }
 .snackbar-success{
-    --mdc-snackbar-container-color: #4fd67c !important;
+    --mdc-snackbar-container-color: var(--color-success) !important;
 }
 /* Error */
 .snackbar-error {
-    --mdc-snackbar-container-color: #ed483c !important;
+    --mdc-snackbar-container-color: var(--color-error) !important;
 }
 /* Warning */
-.snackbar-warning {
+/* .snackbar-warning {
     --mdc-snackbar-container-color: #e2cd57 !important;
-}
+} */

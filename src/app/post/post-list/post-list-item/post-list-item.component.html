@@ -1,0 +1,56 @@
+<mat-card class="card-container">
+    <div class="img-container" (click)="openPostDetail(post)">
+        <img class="post-img" *ngIf="post.postImage!== undefined" mat-card-image src="{{post.postImage}}">
+    </div>
+    <mat-card-content class="card-content">
+        <div class="card-primary-title">
+            <h2>{{post.postName}}</h2>
+            <div class="post-author-info">
+                <img *ngIf="post != undefined" class="author-avatar" src="{{post.author.avatar.path}}"/>
+                <mat-card-subtitle>
+                    by
+                    <span class="author-name">
+                        {{post.author.username}}
+                    </span>
+                </mat-card-subtitle>
+                <mat-card-subtitle class="post-date">{{post.createdAt | date : 'dd/MM/yyyy HH:mm:ss'}}</mat-card-subtitle>
+            </div>
+        </div>
+        <mat-divider></mat-divider>
+    </mat-card-content>
+    <mat-card-actions>
+        <div class="post-stats">
+            <span>
+                {{post.likeCount || 0}} likes
+            </span>
+            <span>
+                {{post.commentCount}} comments
+            </span>
+        </div>
+        <div class="card-actions">
+            <button mat-icon-button color="warn" class="card-icon"
+                (click)="onLikePost(post)">
+                <!-- <mat-icon>favorite_border</mat-icon> -->
+                <ng-container [ngSwitch]="isPostAlreadyLiked">
+                    <ng-container *ngSwitchCase="true">
+                        <ng-container *ngTemplateOutlet="alreadyLiked"></ng-container>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                        <ng-container *ngTemplateOutlet="notLiked"></ng-container>
+                    </ng-container>
+                </ng-container>
+            </button>
+            <button mat-button color="primary" class="text-button"
+                (click)="openPostDetail(post)">
+                View post
+            </button>
+        </div>
+    </mat-card-actions>
+</mat-card>
+
+<ng-template #alreadyLiked>
+    <mat-icon>favorite</mat-icon>
+</ng-template>
+<ng-template #notLiked>
+    <mat-icon>favorite_border</mat-icon>
+</ng-template>

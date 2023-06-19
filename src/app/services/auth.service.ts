@@ -40,15 +40,6 @@ export class AuthService {
     return this.httpClient.post<ResponseResult<UserLoginCredentials>>('/api/auth/register', userRegistration);
   }
 
-  // refreshAccessToken(refreshToken : string){
-  //   return this.httpClient.post<ResponseResult<any>>('/api/auth/token', {refreshToken : refreshToken})
-  //     .pipe(map(result =>{
-  //       this.storeUserLoginInfo(result.data);
-  //       this.setUpCurrentUserLoginInfo();
-  //       return result;
-  //     }))
-  // }
-
   refreshAccessToken(){
     return this.httpClient.post<ResponseResult<any>>('/api/auth/token', {withCredentials: true})
       .pipe(map(result =>{
@@ -61,7 +52,7 @@ export class AuthService {
   }
 
   storeUserLoginInfo(accessToken: string){
-    if(accessToken){
+    if(accessToken != ''){
       this.accessToken = accessToken;
       this.isUserSignedIn.next(true);
       try {
@@ -76,6 +67,12 @@ export class AuthService {
       }
     }
     else{
+      this.accessToken = '';
+      this.currentUserLoginInfo.next({
+        id : undefined,
+        email : undefined,
+        username : undefined
+      });
       this.isUserSignedIn.next(false);
     }
   }
@@ -115,7 +112,12 @@ export class AuthService {
   // }
 
   signOut(){
-    return this.httpClient.post<ResponseResult<any>>('/api/auth/logout', {});
+    return this.httpClient.post<ResponseResult<any>>('/api/auth/logout', {})
+      .pipe(
+        map(() =>{
+          this.storeUserLoginInfo('');
+        })
+      );
   }
 
   // isSignedIn(){
