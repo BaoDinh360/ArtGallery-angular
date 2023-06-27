@@ -1,3 +1,4 @@
+import { PageFilterSearch } from "./page-filter-search.model"
 
 interface PostAuthor{
     _id : string,
@@ -6,14 +7,6 @@ interface PostAuthor{
         path: string,
     }
 }
-
-// interface PostImage{
-//     // _id?: string,
-//     // name: string,
-//     // type: string,
-//     // size: string,
-//     path: string
-// }
 
 export interface Post{
     _id : string,
@@ -29,9 +22,14 @@ export interface Post{
 }
 
 
-// export interface CreatePost{
-//     postName? : string,
-//     description? : string,
-//     postImage : PostImage,
-// }
+export interface PostFilterSearch extends PageFilterSearch{
+    postName?: string,
+    authorName?: string
+}
+
+export interface PostSort{
+    postName:string,
+    likeCount: string,
+    commentCount: string
+}
 

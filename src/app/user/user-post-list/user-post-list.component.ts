@@ -34,17 +34,17 @@ export class UserPostListComponent implements OnInit {
   }
 
   getPostByCurrentUser(){
-    this.postService.getPostsByCurrentUser(this.page, this.limit).subscribe(result =>{
-      if(result.status === RESPONSE_STATUS.SUCCESS){
-        this.postList = result.data.items;
-        this.postPagination = {
-          totalCount: result.data.totalCount,
-          itemsPerPage: result.data.itemsPerPage,
-          pageIndex: result.data.pageIndex - 1,
-          totalPage: result.data.totalPage
-        }
-      }
-    })
+    // this.postService.getPostsByCurrentUser(this.page, this.limit).subscribe(result =>{
+    //   if(result.status === RESPONSE_STATUS.SUCCESS){
+    //     this.postList = result.data.items;
+    //     this.postPagination = {
+    //       totalCount: result.data.totalCount,
+    //       itemsPerPage: result.data.itemsPerPage,
+    //       pageIndex: result.data.pageIndex - 1,
+    //       totalPage: result.data.totalPage
+    //     }
+    //   }
+    // })
   }
 
   paginateEvent(event : PageEvent){

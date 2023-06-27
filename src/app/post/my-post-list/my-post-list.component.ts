@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
@@ -8,7 +9,8 @@ import { DialogService } from 'src/app/services/dialog/dialog.service';
 import { PostService } from 'src/app/services/post.service';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { RESPONSE_STATUS } from 'src/app/shared/models/enums';
-import { Post } from 'src/app/shared/models/post.model';
+import { PageFilterSearch } from 'src/app/shared/models/page-filter-search.model';
+import { Post, PostFilterSearch, PostSort } from 'src/app/shared/models/post.model';
 
 @Component({
   selector: 'app-my-post-list',
@@ -16,7 +18,7 @@ import { Post } from 'src/app/shared/models/post.model';
   styleUrls: ['./my-post-list.component.css']
 })
 export class MyPostListComponent {
-  tableColumns : string[] = ['actions','index', 'postName', 'likes', 'comments'];
+  tableColumns : string[] = ['actions','index', 'postName', 'likeCount', 'commentCount', 'createdAt'];
   postList : Post[] = [];
   postPagination! : {
     totalCount: number,
@@ -25,22 +27,32 @@ export class MyPostListComponent {
     totalPage: number,
   }
 
+  postFilterSearch: PostFilterSearch ={
+    page : 1,
+    limit: 5
+  };
+
+  postSort: PostSort ={
+    postName: '',
+    likeCount: '',
+    commentCount: ''
+  }
+
   constructor(
     private postService : PostService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
     private dialogService: DialogService,
   ){}
 
-  page: number = 1;
-  limit: number = 5;
+  // page: number = 1;
+  // limit: number = 5;
 
   ngOnInit(): void {
     this.getPostByCurrentUser();
   }
 
   getPostByCurrentUser(){
-    this.postService.getPostsByCurrentUser(this.page, this.limit).subscribe(result =>{
+    this.postService.getPostsByCurrentUser(this.postFilterSearch, this.postSort).subscribe(result =>{
       if(result.status === RESPONSE_STATUS.SUCCESS){
         this.postList = result.data.items;
         
@@ -55,8 +67,10 @@ export class MyPostListComponent {
   }
 
   paginateEvent(event : PageEvent){
-    this.limit = event.pageSize;
-    this.page = event.pageIndex + 1;
+    // this.limit = event.pageSize;
+    // this.page = event.pageIndex + 1;
+    this.postFilterSearch.page = event.pageIndex + 1;
+    this.postFilterSearch.limit = event.pageSize;
     this.getPostByCurrentUser();
   }
 
@@ -85,5 +99,25 @@ export class MyPostListComponent {
         this.getPostByCurrentUser();
       }
     })
+  }
+
+  onSortChange(sortState: Sort){
+    this.resetSortState();
+    if(sortState.direction){
+      console.log(`Column sorted ${sortState.active} ${sortState.direction}`);
+      this.postSort[sortState.active as keyof PostSort] = sortState.direction;
+    }
+    else{
+      console.log(`Column sorted ${sortState.active} ended`);
+    }
+    this.getPostByCurrentUser();
+  }
+
+  resetSortState(){
+    this.postSort ={
+      postName: '',
+      likeCount: '',
+      commentCount: ''
+    }
   }
 }

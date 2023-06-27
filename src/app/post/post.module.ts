@@ -9,6 +9,8 @@ import { MyPostListComponent } from './my-post-list/my-post-list.component';
 import { PostDetailComponent } from "./post-detail/post-detail.component";
 import { PostRoutingModule } from "./post-routing.module";
 import { PostListItemComponent } from './post-list/post-list-item/post-list-item.component';
+import { PostSearchFilterComponent } from "./post-search-filter/post-search-filter.component";
+
 
 
 @NgModule({
@@ -18,6 +20,7 @@ import { PostListItemComponent } from './post-list/post-list-item/post-list-item
         MyPostListComponent,
         PostDetailComponent,
         PostListItemComponent,
+        PostSearchFilterComponent,
       ],
       imports: [
         PostRoutingModule,

@@ -1,6 +1,10 @@
 
 <div>
     <div>
+        <app-post-search-filter [isUserSignedIn]="isUserSignedIn"
+            (openCreatePostEvent)="openCreatePost()"
+            (filterSearchEvent)="onFilterSearch($event)">
+        </app-post-search-filter>
         <mat-grid-list [cols]="screenBreakpoint" rowHeight="1:1.2" [gutterSize]="'16px'" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let post of postLists; let i = index">
                 <app-post-list-item [post]="post" [currentUserLoginId]="currentUserLoginId"

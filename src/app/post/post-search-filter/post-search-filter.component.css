@@ -1,0 +1,18 @@
+.toolbar-container{
+    padding: 16px 48px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: var(--container-bg-color);
+    height: 80px;
+    max-height: 120px;
+    /* box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 4px; */
+}
+.toolbar-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 8px;
+    align-items: center;
+    min-height: 64px;
+}

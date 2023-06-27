@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Post } from '../shared/models/post.model';
+import { Post, PostFilterSearch, PostSort } from '../shared/models/post.model';
 import { PagedResponseResult, ResponseResult } from '../shared/models/responseResult';
 import { Image } from '../shared/models/image.model';
 import { CreatePost } from '../shared/models/create-post.model';
@@ -25,17 +25,52 @@ export class PostService {
     return this.postLikeData$;
   }
 
-  getAllPosts (page: number, limit: number) {
+  private createQueryParams(filterSearch : Object, sortObject?: Object) : HttpParams{
+    let params = new HttpParams();
+    Object.entries(filterSearch).forEach(([key, value]) =>{
+      if(value){
+        params = params.append(key, value);
+      }
+    })
+
+    let sortArray: string[] = [];
+    let sortValue = '';
+    if(sortObject != undefined){
+      Object.entries(sortObject).forEach(([key, value]) =>{
+        if(value !== ''){
+          sortArray.push(`${key}:${value}`)
+        }
+      })
+    }
+    if(sortArray.length > 0){
+      sortValue =  sortArray.join(',');
+      params = params.append('sort', sortValue);
+    }
+
+    return params;
+  }
+
+  getAllPosts (postFilterSearch: PostFilterSearch) {
     // return this.httpClient.get<PagedResponseResult<Post>>('/api/posts');
-    return this.httpClient.get<PagedResponseResult<Post>>(`/api/posts?page=${page}&limit=${limit}`);
+    // return this.httpClient.get<PagedResponseResult<Post>>(`/api/posts?page=${page}&limit=${limit}`);
+    // let params = new HttpParams();
+    // Object.entries(postFilterSearch).forEach(([key, value]) =>{
+    //   if(value){
+    //     params = params.append(key, value);
+    //   }
+    // })
+    const params = this.createQueryParams(postFilterSearch);
+    return this.httpClient.get<PagedResponseResult<Post>>('/api/posts', { params: params});
   }
 
   getPost(id: string){
     return this.httpClient.get<ResponseResult<Post>>(`/api/posts/${id}`);
   }
 
-  getPostsByCurrentUser(page: number, limit: number){
-    return this.httpClient.get<PagedResponseResult<Post>>(`/api/posts/my-posts?page=${page}&limit=${limit}`);
+  getPostsByCurrentUser(postFilterSearch: PostFilterSearch, postSort: PostSort){
+    const params = this.createQueryParams(postFilterSearch, postSort);
+    // return this.httpClient.get<PagedResponseResult<Post>>(`/api/posts/my-posts?page=${page}&limit=${limit}`);
+    return this.httpClient.get<PagedResponseResult<Post>>('/api/posts/my-posts', {params : params});
   }
 
   createPost(newPost : CreatePost){

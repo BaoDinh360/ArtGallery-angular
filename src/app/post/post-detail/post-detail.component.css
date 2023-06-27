@@ -6,7 +6,7 @@
     height: 60%;
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
     padding: 32px 16px;
-    background-color: var(--cotainer-bg-color);
+    background-color: var(--container-bg-color);
 }
 .img-outer-container{
     width: 100%;

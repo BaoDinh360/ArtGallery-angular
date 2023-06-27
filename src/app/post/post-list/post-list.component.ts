@@ -1,7 +1,7 @@
 import { AfterViewChecked, Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { PostService } from '../../services/post.service';
-import { Post } from '../../shared/models/post.model';
+import { Post, PostFilterSearch } from '../../shared/models/post.model';
 import { RESPONSE_STATUS } from 'src/app/shared/models/enums';
 import { PageEvent } from '@angular/material/paginator';
 import { Socket } from 'ngx-socket-io';
@@ -20,9 +20,14 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
 
   postLists : Post[] = [];
   currentUserLoginId!: string;
-  private isUserSignedIn: boolean = false;
+  isUserSignedIn: boolean = false;
   screenBreakpoint!: number;
   isPostLiked: boolean = false;
+
+  postFilterSearch: PostFilterSearch ={
+    page : 1,
+    limit: 9
+  } 
 
   constructor(
     private postService : PostService,
@@ -32,8 +37,8 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     private snackBar: SnackbarNotificationService,
   ){}
 
-    page: number = 1;
-    limit: number = 9;
+    // page: number = 1;
+    // limit: number = 9;
 
     postPagination! : {
       totalCount: number,
@@ -67,7 +72,7 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
   }
 
   getAllPosts(){
-    this.postService.getAllPosts(this.page, this.limit).subscribe(result =>{
+    this.postService.getAllPosts(this.postFilterSearch).subscribe(result =>{
       if(result.status === RESPONSE_STATUS.SUCCESS)
       this.postLists = result.data.items;
       this.postPagination = {
@@ -84,8 +89,10 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
   }
 
   paginateEvent(event: PageEvent){
-    this.limit = event.pageSize;
-    this.page = event.pageIndex + 1;
+    // this.limit = event.pageSize;
+    // this.page = event.pageIndex + 1;
+    this.postFilterSearch.page = event.pageIndex + 1;
+    this.postFilterSearch.limit = event.pageSize;
     this.getAllPosts();
   }
 
@@ -162,8 +169,20 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     })
   }
 
+  onFilterSearch(searchData: any){
+    this.postFilterSearch = {
+      ...this.postFilterSearch,
+      ...searchData
+    };
+    console.log(this.postFilterSearch);
+    this.getAllPosts();
+  }
+
   openPostDetail(post: Post){
     this.router.navigate(['/post', post.author.username, post._id]);
+  }
+  openCreatePost(){
+    this.router.navigate(['/post', ])
   }
 
   handleEmittedEvent(dataEmitted: any){
