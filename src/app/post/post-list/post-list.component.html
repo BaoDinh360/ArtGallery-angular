@@ -7,7 +7,7 @@
         </app-post-search-filter>
         <mat-grid-list [cols]="screenBreakpoint" rowHeight="1:1.2" [gutterSize]="'16px'" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let post of postLists; let i = index">
-                <app-post-list-item [post]="post" [currentUserLoginId]="currentUserLoginId"
+                <app-post-list-item [post]="post" [currentUserLoginId]="currentUserLogin.id"
                     (postEmitEvent)="handleEmittedEvent($event)">
                 </app-post-list-item>
                 <!-- <mat-card class="card-container">

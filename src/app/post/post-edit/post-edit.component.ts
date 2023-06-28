@@ -12,6 +12,8 @@ import { AlertStatus, EditPageState, RESPONSE_STATUS } from 'src/app/shared/mode
 import { FileUpload } from 'src/app/shared/models/fileUploadModel';
 import { Post } from 'src/app/shared/models/post.model';
 import { ResponseResult } from 'src/app/shared/models/responseResult';
+import {ENTER} from '@angular/cdk/keycodes';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
   selector: 'app-post-edit',
@@ -36,6 +38,8 @@ export class PostEditComponent implements OnInit {
     buttonTitle: string
   }
 
+  readonly separatorKeyCodes = [ENTER] as const;
+
   constructor(
     private postService : PostService,
     public router : Router,
@@ -47,6 +51,7 @@ export class PostEditComponent implements OnInit {
         Validators.required
       ]),
       postDescriptionControl : new FormControl<string>(''),
+      postTagControl : new FormControl<string[]>([]),
       postImageUploadControl : new FormControl('')
     })
   }
@@ -54,6 +59,7 @@ export class PostEditComponent implements OnInit {
   get postName() {return this.postForm.get('postNameControl')};
   get postDescription() {return this.postForm.get('postDescriptionControl')};
   get postImage() {return this.postForm.get('postImageUploadControl')}
+  get postTags() {return this.postForm.get('postTagControl')};
 
   get isDisplayForm() : boolean{
     return this.editPageState === EditPageState.CREATE || 
@@ -94,7 +100,8 @@ export class PostEditComponent implements OnInit {
         this.post = result.data;
         this.postForm.patchValue({
           postNameControl: this.post.postName,
-          postDescriptionControl: this.post.description
+          postDescriptionControl: this.post.description,
+          postTagControl: this.post.postTags
         })
         this.imgPreviewUrl = this.post.postImage;
       }
@@ -112,12 +119,27 @@ export class PostEditComponent implements OnInit {
     console.log(this.postImage?.value);
   }
 
+  onAddPostTag(event: MatChipInputEvent): void{
+    const value = (event.value || '').trim();
+    if(value){
+      this.postTags?.value.push(value);
+    }
+    event.chipInput!.clear();
+  }
+
+  onRemovePostTag(tagIndex: number): void{
+    if(tagIndex >= 0){
+      this.postTags?.value.splice(tagIndex, 1);
+    }
+  }
+
   onSubmit(){
     if(this.postForm.valid){
       const postData: CreatePost = {
         postName : this.postName?.value as string,
         description : this.postDescription?.value as string,
-        postImage : undefined
+        postImage : undefined,
+        postTags: this.postTags?.value
       }
 
       if(this.isCreatePage){

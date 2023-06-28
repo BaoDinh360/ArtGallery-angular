@@ -15,6 +15,7 @@ export interface Post{
     description? : string,
     postImage : string,
     userLikedPost?: string[],
+    postTags?: string[],
     likeCount?: number,
     commentCount?: number,
     createdAt : string,

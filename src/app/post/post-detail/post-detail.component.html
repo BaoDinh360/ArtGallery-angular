@@ -53,6 +53,20 @@
                 </span>
             </div>
             <div>
+                <!-- <mat-chip-listbox>
+                    <mat-chip-option 
+                        *ngFor="let tag of post.postTags"
+                        selectable="false" >
+                        {{tag}}
+                    </mat-chip-option>
+                </mat-chip-listbox> -->
+                <mat-chip-set>
+                    <mat-chip *ngFor="let tag of post.postTags" class="post-tag">
+                        {{tag}}
+                    </mat-chip>
+                </mat-chip-set>
+            </div>
+            <div>
                 {{post.description}}
             </div>
             <app-comment-list [commentList]="postCommentsList"></app-comment-list>

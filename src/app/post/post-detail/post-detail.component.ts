@@ -49,7 +49,6 @@ export class PostDetailComponent implements OnInit, OnDestroy, DoCheck {
     })
     this.authService.getCurrentUserLoginInfo().subscribe(result =>{
       this.currentUserLoginId = result.id;
-      // this.isPostAlreadyLiked = this.checkIfCurrentUserLikedPost();
     })
     this.updateNewPostLikeData();
     this.updateNewPostCommentData();
@@ -65,7 +64,6 @@ export class PostDetailComponent implements OnInit, OnDestroy, DoCheck {
       this.post = result.data;
       this.postCommentService.getPostComments(id).subscribe(result =>{
         this.postCommentsList = result.data;
-
         this.isPostAlreadyLiked = this.checkIfCurrentUserLikedPost();
       })
     })

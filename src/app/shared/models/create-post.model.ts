@@ -4,4 +4,5 @@ export interface CreatePost{
     postName? : string,
     description? : string,
     postImage? : Image,
+    postTags? : string[]
 }

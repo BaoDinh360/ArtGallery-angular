@@ -19,7 +19,26 @@
                         (fileUploadCompleted)="onFileUploadCompleted($event)"
                         #fileUpload>
                     </app-file-upload>
-                    
+                    <mat-form-field>
+                        <mat-label>Add post tags</mat-label>
+                        <mat-chip-grid #postTag aria-label="Enter tags"
+                            formControlName="postTagControl">
+                            <mat-chip-row *ngFor="let tag of postTags?.value; let i = index"
+                                (removed)="onRemovePostTag(i)"
+                                [editable]="false">
+                                {{tag}}
+                                <button matChipRemove [attr.aria-label]="'remove' + tag">
+                                    <mat-icon>cancel</mat-icon>
+                                </button>
+                            </mat-chip-row>
+                            <input 
+                                placeholder="Add new tag..."
+                                [matChipInputFor]="postTag"
+                                [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
+                                (matChipInputTokenEnd)="onAddPostTag($event)"
+                                />
+                        </mat-chip-grid>
+                    </mat-form-field>
                     <button mat-flat-button color="primary" type="submit">{{displayConfig.buttonTitle}}</button>
                 </div>
                 <div class="right-section">

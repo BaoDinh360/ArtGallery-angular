@@ -9,7 +9,7 @@
     flex-direction: row;
     column-gap: 16px;
     /* background-color: rgb(245, 244, 244); */
-    background-color: var(--light-grey-bg);
+    background-color: var(--neutral-container);
     padding: 12px;
     border-radius: 8px;
 }

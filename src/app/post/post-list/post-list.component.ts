@@ -19,10 +19,15 @@ import { SnackbarNotificationService } from 'src/app/services/snackbar-notificat
 export class PostListComponent implements OnInit, AfterViewChecked  {
 
   postLists : Post[] = [];
-  currentUserLoginId!: string;
+  // currentUserLoginId!: string;
   isUserSignedIn: boolean = false;
   screenBreakpoint!: number;
   isPostLiked: boolean = false;
+  currentUserLogin ={
+    id : '',
+    email : '',
+    username : ''
+  };
 
   postFilterSearch: PostFilterSearch ={
     page : 1,
@@ -50,8 +55,9 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     this.getAllPosts();
     this.screenBreakpoint = this.configResponsiveGrid(window.innerWidth);
     this.authService.getCurrentUserLoginInfo().subscribe(result =>{
-      this.currentUserLoginId = result.id;
-      console.log(this.currentUserLoginId);
+      this.currentUserLogin = result;
+      // this.currentUserLoginId = result.id;
+      // console.log(this.currentUserLoginId);
       
     })
     this.updateNewPostLike();
@@ -101,7 +107,7 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
       return false;
     }
     else{
-      const userLiked = post.userLikedPost?.find(user => user == this.currentUserLoginId);
+      const userLiked = post.userLikedPost?.find(user => user == this.currentUserLogin.id);
       if(userLiked == undefined){
         return false;
       }
@@ -182,7 +188,7 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     this.router.navigate(['/post', post.author.username, post._id]);
   }
   openCreatePost(){
-    this.router.navigate(['/post', ])
+    this.router.navigate(['/post', this.currentUserLogin.username, 'create-post']);
   }
 
   handleEmittedEvent(dataEmitted: any){
