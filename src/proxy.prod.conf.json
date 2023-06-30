@@ -1,0 +1,10 @@
+{
+    "/api" :{
+        "target" : "artgallery-nestjs-production.up.railway.app",
+        "secure" : false
+    },
+    "/uploads" :{
+        "target" : "artgallery-nestjs-production.up.railway.app",
+        "secure" : false
+    }
+}
