@@ -6,6 +6,7 @@ import { MaterialModule } from '../material-ui/material.module';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { CommentListComponent } from './components/comment-list/comment-list.component';
 import { SnackbarNotificationComponent } from './components/snackbar-notification/snackbar-notification.component';
+import { ToolbarActionsComponent } from './components/toolbar-actions/toolbar-actions.component';
 
 
 
@@ -16,6 +17,7 @@ import { SnackbarNotificationComponent } from './components/snackbar-notificatio
     ConfirmDialogComponent,
     CommentListComponent,
     SnackbarNotificationComponent,
+    ToolbarActionsComponent,
   ],
   imports: [
     CommonModule,
@@ -24,7 +26,8 @@ import { SnackbarNotificationComponent } from './components/snackbar-notificatio
   exports:[
     FileUploadComponent,
     AlertComponent,
-    CommentListComponent
+    CommentListComponent,
+    ToolbarActionsComponent
   ]
 })
 export class SharedModule { }

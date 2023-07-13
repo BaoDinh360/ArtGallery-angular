@@ -1,15 +1,14 @@
-import { AfterViewChecked, Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { PostService } from '../../services/post.service';
 import { Post, PostFilterSearch } from '../../shared/models/post.model';
 import { RESPONSE_STATUS } from 'src/app/shared/models/enums';
 import { PageEvent } from '@angular/material/paginator';
-import { Socket } from 'ngx-socket-io';
 import { EventSocketService } from 'src/app/services/event-socket.service';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { SnackbarNotificationComponent } from 'src/app/shared/components/snackbar-notification/snackbar-notification.component';
 import { SnackbarNotificationService } from 'src/app/services/snackbar-notification.service';
+import { ToolbarActionsComponent } from 'src/app/shared/components/toolbar-actions/toolbar-actions.component';
+import { CurrentUserLoginInfo } from 'src/app/shared/models/userLoginModel';
 
 @Component({
   selector: 'app-post-list',
@@ -19,20 +18,26 @@ import { SnackbarNotificationService } from 'src/app/services/snackbar-notificat
 export class PostListComponent implements OnInit, AfterViewChecked  {
 
   postLists : Post[] = [];
-  // currentUserLoginId!: string;
   isUserSignedIn: boolean = false;
   screenBreakpoint!: number;
   isPostLiked: boolean = false;
-  currentUserLogin ={
-    id : '',
-    email : '',
-    username : ''
-  };
+  currentUserLoginInfo! : CurrentUserLoginInfo;
 
   postFilterSearch: PostFilterSearch ={
     page : 1,
-    limit: 9
+    limit: 9,
+    postName: undefined,
+    authorName: undefined
   } 
+
+  postPagination! : {
+    totalCount: number,
+    itemsPerPage: number,
+    pageIndex: number,
+    totalPage: number,
+  }
+
+  @ViewChild('toolbar') toolbar!: ToolbarActionsComponent
 
   constructor(
     private postService : PostService,
@@ -45,20 +50,15 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     // page: number = 1;
     // limit: number = 9;
 
-    postPagination! : {
-      totalCount: number,
-      itemsPerPage: number,
-      pageIndex: number,
-      totalPage: number,
-    }
+  get isCreateFunc() : boolean{
+    return this.currentUserLoginInfo.id !== '' && this.currentUserLoginInfo.id !== undefined;
+  }
+
   ngOnInit(): void {
     this.getAllPosts();
     this.screenBreakpoint = this.configResponsiveGrid(window.innerWidth);
     this.authService.getCurrentUserLoginInfo().subscribe(result =>{
-      this.currentUserLogin = result;
-      // this.currentUserLoginId = result.id;
-      // console.log(this.currentUserLoginId);
-      
+      this.currentUserLoginInfo = result;
     })
     this.updateNewPostLike();
     this.updateTotalCommentsCount();
@@ -66,7 +66,7 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
       this.isUserSignedIn = result;
     })  
   }
-  
+
   configResponsiveGrid(windowWidth: number){
     if(windowWidth <= 700) { return 1}
     if(windowWidth <= 1000){ return 2}
@@ -107,7 +107,7 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
       return false;
     }
     else{
-      const userLiked = post.userLikedPost?.find(user => user == this.currentUserLogin.id);
+      const userLiked = post.userLikedPost?.find(user => user == this.currentUserLoginInfo.id);
       if(userLiked == undefined){
         return false;
       }
@@ -175,20 +175,22 @@ export class PostListComponent implements OnInit, AfterViewChecked  {
     })
   }
 
-  onFilterSearch(searchData: any){
-    this.postFilterSearch = {
-      ...this.postFilterSearch,
-      ...searchData
-    };
-    console.log(this.postFilterSearch);
+  onFilterSearch(){
     this.getAllPosts();
+  }
+
+  onToolbarAction(event: any){
+    const { actionType, data } = event;
+    if(actionType === 'search'){
+      this.onFilterSearch();
+    }
   }
 
   openPostDetail(post: Post){
     this.router.navigate(['/post', post.author.username, post._id]);
   }
   openCreatePost(){
-    this.router.navigate(['/post', this.currentUserLogin.username, 'create-post']);
+    this.router.navigate(['/post', this.currentUserLoginInfo.username, 'create-post']);
   }
 
   handleEmittedEvent(dataEmitted: any){

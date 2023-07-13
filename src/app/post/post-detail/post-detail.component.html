@@ -1,4 +1,11 @@
 <div>
+    <app-toolbar-actions #toolbar 
+        [currentUserLogin]="currentUserLoginInfo"
+        [isCreateFunc]="isCurrentUserLoggedIn"
+        [isEditFunc]="isCurrentUserLoggedIn && isUserLoggedInPostAuthor"
+        [isDeleteFunc]="isCurrentUserLoggedIn && isUserLoggedInPostAuthor"
+        (onToolbarActionEvent)="onToolbarAction($event)">
+    </app-toolbar-actions>
     <div class="post-detail-container" *ngIf="post != undefined">
         <div class="img-container">
             <img class="post-img" src="{{post.postImage}}">

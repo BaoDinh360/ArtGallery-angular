@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { PostService } from './post.service';
 import { PostCommentService } from './post-comment.service';
 import { PostComment } from '../shared/models/post-comment.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +50,7 @@ export class EventSocketService extends Socket {
     private authService: AuthService,
     // private postCommentService: PostCommentService,
   ) { 
-    super({ url: 'http://localhost:3000', options: { 
+    super({ url: environment.baseURL, options: { 
       autoConnect: false, 
     } })
   }

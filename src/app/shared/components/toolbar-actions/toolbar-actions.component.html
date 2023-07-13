@@ -1,0 +1,32 @@
+<div class="toolbar-actions-container"
+    *ngIf="isShowToolbarActions">
+    <div *ngIf="isSearchFunc">
+        <button mat-flat-button color="primary" 
+            (click)="onFilterSearch()">
+            <mat-icon>search</mat-icon>
+            Search
+        </button>
+    </div>
+    <div *ngIf="isCreateFunc">
+        <button mat-flat-button color="primary"
+            (click)="openCreatePostPage()">
+            <mat-icon>add</mat-icon>
+            Create post
+        </button>
+    </div>
+    <div *ngIf="isEditFunc">
+        <button mat-flat-button color="accent"
+            
+            (click)="openEditPostPage()">
+            <mat-icon>edit</mat-icon>
+            Edit this post
+        </button>
+    </div>
+    <div *ngIf="isDeleteFunc">
+        <button mat-flat-button color="warn"
+            (click)="deletePost()">
+            <mat-icon>delete</mat-icon>
+            Delete this post
+        </button>
+    </div>
+</div>

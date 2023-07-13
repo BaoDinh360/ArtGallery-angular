@@ -5,7 +5,7 @@ import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, Subject, map, tap } from 'rxjs';
 import { ResponseResult } from '../shared/models/responseResult';
-import { UserLoginInfo } from '../shared/models/userLoginModel';
+import { CurrentUserLoginInfo, UserLoginInfo } from '../shared/models/userLoginModel';
 import { User, UserLoginCredentials, UserRegistration } from '../shared/models/userModel';
 
 @Injectable({
@@ -13,7 +13,7 @@ import { User, UserLoginCredentials, UserRegistration } from '../shared/models/u
 })
 export class AuthService {
 
-  private currentUserLoginInfo = new BehaviorSubject<any>({
+  private currentUserLoginInfo = new BehaviorSubject<CurrentUserLoginInfo>({
     id : '',
     email : '',
     username : ''
@@ -69,9 +69,9 @@ export class AuthService {
     else{
       this.accessToken = '';
       this.currentUserLoginInfo.next({
-        id : undefined,
-        email : undefined,
-        username : undefined
+        id : '',
+        email : '',
+        username : ''
       });
       this.isUserSignedIn.next(false);
     }

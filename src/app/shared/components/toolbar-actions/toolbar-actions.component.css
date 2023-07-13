@@ -1,0 +1,8 @@
+.toolbar-actions-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    column-gap: 16px;
+    margin: 8px 0 16px 0;
+}

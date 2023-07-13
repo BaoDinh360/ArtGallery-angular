@@ -1,13 +1,31 @@
 
 <div>
     <div>
-        <app-post-search-filter [isUserSignedIn]="isUserSignedIn"
-            (openCreatePostEvent)="openCreatePost()"
-            (filterSearchEvent)="onFilterSearch($event)">
-        </app-post-search-filter>
+        <app-toolbar-actions #toolbar [currentUserLogin]="currentUserLoginInfo"
+            [isSearchFunc]="true"
+            [isCreateFunc]="isCreateFunc"
+            [isEditFunc]="false"
+            [isDeleteFunc]="false"
+            (onToolbarActionEvent)="onToolbarAction($event)">
+        </app-toolbar-actions>
+
+        <!-- post filter section -->
+        <div class="search-form-container">
+            <mat-form-field appearance="outline" class="search-box" subscriptSizing="dynamic">
+                <mat-label>Post name</mat-label>
+                <input matInput placeholder="post name..." [(ngModel)]="postFilterSearch.postName"/>
+                <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="search-box" subscriptSizing="dynamic">
+                <mat-label>Author name</mat-label>
+                <input matInput placeholder="author name..." [(ngModel)]="postFilterSearch.authorName"/>
+                <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+        </div>
+
         <mat-grid-list [cols]="screenBreakpoint" rowHeight="1:1.2" [gutterSize]="'16px'" (window:resize)="onResize($event)">
             <mat-grid-tile *ngFor="let post of postLists; let i = index">
-                <app-post-list-item [post]="post" [currentUserLoginId]="currentUserLogin.id"
+                <app-post-list-item [post]="post" [currentUserLoginId]="currentUserLoginInfo.id"
                     (postEmitEvent)="handleEmittedEvent($event)">
                 </app-post-list-item>
                 <!-- <mat-card class="card-container">

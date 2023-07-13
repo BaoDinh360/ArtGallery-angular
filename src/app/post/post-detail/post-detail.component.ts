@@ -1,5 +1,5 @@
 import { Component, DoCheck, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from '../../shared/models/post.model';
 import { PostService } from 'src/app/services/post.service';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -9,6 +9,9 @@ import { PostCommentService } from 'src/app/services/post-comment.service';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { SnackbarNotificationService } from 'src/app/services/snackbar-notification.service';
+import { CurrentUserLoginInfo } from 'src/app/shared/models/userLoginModel';
+import { DialogService } from 'src/app/services/dialog/dialog.service';
+import { RESPONSE_STATUS } from 'src/app/shared/models/enums';
 
 @Component({
   selector: 'app-post-detail',
@@ -22,15 +25,20 @@ export class PostDetailComponent implements OnInit, OnDestroy, DoCheck {
   postCommentsList!: PostComment[];
   postComments$!: Observable<PostComment[]>;
   isPostAlreadyLiked: boolean = false;
-  currentUserLoginId!: string;
+  currentUserLoginInfo!: CurrentUserLoginInfo;
+  isUserLoggedInPostAuthor: boolean = false;
+
   private isUserSignedIn: boolean = false;
+  
   constructor(
     private route: ActivatedRoute,
     private postService: PostService,
     private eventSocket: EventSocketService,
     private postCommentService: PostCommentService,
     private authService: AuthService,
-    private snackBar: SnackbarNotificationService
+    private snackBar: SnackbarNotificationService,
+    private router: Router,
+    private dialogService: DialogService
   ){
     this.commentForm = new FormGroup({
       commentControl: new FormControl('')
@@ -38,6 +46,10 @@ export class PostDetailComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   get commentRef() {return this.commentForm.get('commentControl')};
+
+  get isCurrentUserLoggedIn() : boolean{
+    return this.currentUserLoginInfo.id !== '' && this.currentUserLoginInfo.id !== undefined;
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe(param =>{
@@ -48,7 +60,7 @@ export class PostDetailComponent implements OnInit, OnDestroy, DoCheck {
       this.isUserSignedIn = result;
     })
     this.authService.getCurrentUserLoginInfo().subscribe(result =>{
-      this.currentUserLoginId = result.id;
+      this.currentUserLoginInfo = result;
     })
     this.updateNewPostLikeData();
     this.updateNewPostCommentData();
@@ -65,14 +77,23 @@ export class PostDetailComponent implements OnInit, OnDestroy, DoCheck {
       this.postCommentService.getPostComments(id).subscribe(result =>{
         this.postCommentsList = result.data;
         this.isPostAlreadyLiked = this.checkIfCurrentUserLikedPost();
+
+        this.isUserLoggedInPostAuthor = this.checkIfUserLoggedInIsPostAuthor();
       })
     })
   }
 
+  checkIfUserLoggedInIsPostAuthor(){
+    if(this.currentUserLoginInfo.id === this.post.author._id){
+      return true;
+    }
+    else return false;
+  }
+
   checkIfCurrentUserLikedPost(){
-    if(this.currentUserLoginId == undefined || this.currentUserLoginId == '') return false;
+    if(this.currentUserLoginInfo.id == undefined || this.currentUserLoginInfo.id == '') return false;
     else{
-      const result = this.post.userLikedPost?.find(user => user == this.currentUserLoginId);
+      const result = this.post.userLikedPost?.find(user => user == this.currentUserLoginInfo.id);
       if(result == undefined) return false;
     }
     return true;
@@ -128,6 +149,50 @@ export class PostDetailComponent implements OnInit, OnDestroy, DoCheck {
     this.eventSocket.getNewTotalPostComment().subscribe(result =>{
       if(this.post._id == result.postId){
         this.post.commentCount = result.totalComments;
+      }
+    })
+  }
+
+  onToolbarAction(event: any){
+    if(this.currentUserLoginInfo.id !== this.post.author._id) return;
+    
+    const { actionType, data} = event;
+    switch(actionType){
+      case 'edit':
+        this.openEditPostPage();
+        break;
+      case 'delete':
+        this.openDeleteConfirm();
+        break;
+      default:
+        break;
+    }
+  }
+
+  openEditPostPage(){
+    this.router.navigate(['post', this.post.author.username, 'edit-post', this.post._id]);
+  }
+
+  openDeleteConfirm(){
+    const dialogRef = this.dialogService.showDeleteDialog(
+      `Delete post: ${this.post.postName}`, 'Are you sure you want to delete this post?', true
+    );
+    dialogRef.afterClosed().subscribe((result: boolean) =>{
+      if(result === true){
+        this.deletePost();
+      }
+    })
+  }
+
+  deletePost(){
+    const deletedPostId = this.post._id;
+    const postName = this.post.postName;
+    this.postService.deletePost(deletedPostId).subscribe(result =>{
+      if(result.status == RESPONSE_STATUS.SUCCESS){
+        this.snackBar.showSuccessSnackbar(`Delete post: ${postName} successfully`, 3);
+        setTimeout(() =>{
+          this.router.navigate(['']);
+        }, 3000);
       }
     })
   }

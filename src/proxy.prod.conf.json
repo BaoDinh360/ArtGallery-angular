@@ -1,10 +1,12 @@
 {
     "/api" :{
-        "target" : "artgallery-nestjs-production.up.railway.app",
+        "target" : "https://artgallery-nestjs-production.up.railway.app",
+        "changeOrigin": true,
         "secure" : false
     },
     "/uploads" :{
-        "target" : "artgallery-nestjs-production.up.railway.app",
+        "target" : "https://artgallery-nestjs-production.up.railway.app",
+        "changeOrigin": true,
         "secure" : false
     }
 }

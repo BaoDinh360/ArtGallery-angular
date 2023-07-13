@@ -6,3 +6,9 @@ export interface UserLoginInfo{
     refreshToken : string,
     expiredIn : string
 }
+
+export interface CurrentUserLoginInfo{
+    id : string,
+    email : string,
+    username : string
+}
