@@ -133,7 +133,7 @@ export class PostDetailComponent implements OnInit, OnDestroy, DoCheck {
 
   updateNewPostLikeData(): void{
     this.eventSocket.getNewPostLikeData().subscribe(result =>{
-      if(this.post._id == result.postId){
+      if(this.post._id === result.postId){
         this.post.likeCount = result.likes;
       }
     })
@@ -141,13 +141,15 @@ export class PostDetailComponent implements OnInit, OnDestroy, DoCheck {
 
   updateNewPostCommentData(): void{
     this.eventSocket.getNewPostComment().subscribe(result =>{
-      this.postCommentsList = [...this.postCommentsList, result];
+      if(this.post._id === result.postCommented){
+        this.postCommentsList = [...this.postCommentsList, result];
+      }
     })
   }
 
   updateTotalPostCommentCount(): void{
     this.eventSocket.getNewTotalPostComment().subscribe(result =>{
-      if(this.post._id == result.postId){
+      if(this.post._id === result.postId){
         this.post.commentCount = result.totalComments;
       }
     })

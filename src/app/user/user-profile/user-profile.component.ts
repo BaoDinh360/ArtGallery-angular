@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { SnackbarNotificationService } from 'src/app/services/snackbar-notification.service';
 import { UserService } from 'src/app/services/user.service';
 import { RESPONSE_STATUS } from 'src/app/shared/models/enums';
 import { UpdateUserInfo, User } from 'src/app/shared/models/userModel';
@@ -16,7 +17,8 @@ export class UserProfileComponent implements OnInit {
   fileImage!: File;
   previewImageUrl!: string;
   constructor(
-    private userService : UserService
+    private userService : UserService,
+    private snackBar: SnackbarNotificationService
   ){
     this.userInfoForm = new FormGroup({
       nameControl : new FormControl<string>('', [
@@ -52,17 +54,6 @@ export class UserProfileComponent implements OnInit {
         usernameControl : this.userModel.username
       })
     })
-    // this.userService.getUserProfile().subscribe(result =>{
-    //   if(result.status === RESPONSE_STATUS.SUCCESS){
-    //     this.userModel = result.data;
-    //     this.previewImageUrl = this.userModel.avatar.path;
-    //     this.userInfoForm.patchValue({
-    //       nameControl : this.userModel.name,
-    //       emailControl : this.userModel.email,
-    //       usernameControl : this.userModel.username
-    //     })
-    //   }
-    // })
   }
 
   onFileSelected(result: any){
@@ -82,7 +73,7 @@ export class UserProfileComponent implements OnInit {
         }
         this.userService.updateCurrentUserInfo(currentUserInfo).subscribe(result =>{
           if(result.status === RESPONSE_STATUS.SUCCESS){
-            console.log(result);
+            this.snackBar.showSuccessSnackbar('Update user info successfully', 3);
             this.userService.loadUserProfile();
           }
         })

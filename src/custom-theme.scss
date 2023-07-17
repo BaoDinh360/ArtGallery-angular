@@ -7,9 +7,12 @@
 
 $my-primary: mat.define-palette(mat.$purple-palette, 400, 100, 700);
 $my-accent: mat.define-palette(mat.$light-blue-palette, 400, 100, 600);
-$my-warn: mat.define-palette(mat.$pink-palette, 500, 100, 600);
-$my-success: mat.define-palette(mat.$green-palette, A400);
-$my-error: mat.define-palette(mat.$red-palette, 600, 100, 800);
+// $my-warn: mat.define-palette(mat.$pink-palette, 500, 100, 600);
+$my-warn: mat.define-palette(mat.$red-palette, 600, 100, 800);
+$my-success: mat.define-palette(mat.$green-palette, A700);
+$my-info: mat.define-palette(mat.$light-blue-palette, A400);
+$my-tertiary: mat.define-palette(mat.$pink-palette, 500, 100, 600);
+// $my-error: mat.define-palette(mat.$red-palette, 600, 100, 800);
 $my-neutral: mat.define-palette(mat.$blue-grey-palette);
 
 //create custom theme
@@ -32,7 +35,9 @@ $my-theme: mat.define-light-theme((
     --color-accent: #{mat.get-color-from-palette($my-accent)};
     --color-warn: #{mat.get-color-from-palette($my-warn)};
     --color-success: #{mat.get-color-from-palette($my-success)};
-    --color-error: #{mat.get-color-from-palette($my-error)};
+    --color-info: #{mat.get-color-from-palette($my-info)};
+    --color-tertiary: #{mat.get-color-from-palette($my-tertiary)};
+    // --color-error: #{mat.get-color-from-palette($my-error)};
 
     --primary-container: #{mat.get-color-from-palette($my-primary, 100)};
     --on-primary-container: #{mat.get-color-from-palette($my-primary, 900)};
@@ -41,10 +46,21 @@ $my-theme: mat.define-light-theme((
     --on-accent-container: #{mat.get-color-from-palette($my-accent, 900)};
 
     --warn-container: #{mat.get-color-from-palette($my-warn, 100)};
-    --on-warn-container: #{mat.get-color-from-palette($my-warn, 600)};
+    --on-warn-container: #{mat.get-color-from-palette($my-warn, 700)};
+
+    // --error-container: #{mat.get-color-from-palette($my-error, 200)};
+    // --on-error-container: #{mat.get-color-from-palette($my-error, 800)};
+    --teritary-container: #{mat.get-color-from-palette($my-tertiary, 100)};
+    --on-tertiary-container: #{mat.get-color-from-palette($my-tertiary, 600)};
 
     --neutral-container: #{mat.get-color-from-palette($my-neutral, 50)};
     --on-neutral-container: #{mat.get-color-from-palette($my-neutral, 800)};
     
+}
+
+$primary-light-container: mat.get-color-from-palette($my-primary, 100);
+
+.primary-light-container{
+    background-color: rgba($primary-light-container, 0.2);
 }
 

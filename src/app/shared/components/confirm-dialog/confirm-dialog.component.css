@@ -1,7 +1,7 @@
 .dialog-container{
     text-align: center;
     padding: 16px 0 0 0;
-    border-top: 3px solid #ed483c;
+    border-top: 3px solid var(--color-warn);
 }
 
 .dialog-actions{
@@ -12,17 +12,17 @@
 }
 /* delete dialog */
 .delete-title{
-    color: #ed483c;
+    color: var(--color-warn);
 }
 .delete-button{
-    background-color: #ed483c;
+    background-color: var(--color-warn);
     color: #fff;
 }
 /* info dialog */
 .info-title{
-    color: #6ebdeb;
+    color: var(--color-info);
 }
 .info-button{
-    background-color: #6ebdeb;
+    background-color: var(--color-info);
     color: #fff;
 }

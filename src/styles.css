@@ -29,9 +29,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
 }
 /* Error */
 .snackbar-error {
-    --mdc-snackbar-container-color: var(--color-error) !important;
+    --mdc-snackbar-container-color: var(--color-warn) !important;
 }
 /* Warning */
 /* .snackbar-warning {
     --mdc-snackbar-container-color: #e2cd57 !important;
 } */
+

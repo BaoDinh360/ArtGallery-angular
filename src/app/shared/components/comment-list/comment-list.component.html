@@ -10,11 +10,12 @@
                 <div class="comment-content">
                     <div class="comment-header">
                         <h3 class="comment-username">{{comment.userCommented.username}}</h3>
-                        <span class="comment-date">{{comment.createdAt | date : 'dd/MM/yyyy HH:mm:ss'}}</span>
+                        <span class="comment-date">{{comment.createdAt | date : 'dd/MM/yyyy'}}</span>
                     </div>
                     <p>{{comment.comment}}</p>
                 </div>
             </div>
+            <div class="line-separator"></div>
         </li>
     </ul>
 </div>

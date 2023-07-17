@@ -11,7 +11,10 @@
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Post description</mat-label>
-                        <textarea matInput type="text" formControlName="postDescriptionControl">
+                        <textarea matInput type="text" formControlName="postDescriptionControl"
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="1"
+                            cdkAutosizeMaxRows="6">
                         </textarea>
                     </mat-form-field>
                     <app-file-upload formControlName="postImageUploadControl"

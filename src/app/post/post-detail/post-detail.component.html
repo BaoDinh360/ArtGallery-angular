@@ -13,10 +13,6 @@
         <div class="post-info-container">
             <div class="post-action">
                 <div class="post-button">
-                    <!-- <button mat-flat-button color="warn" (click)="onLikePost()">
-                        <mat-icon>favorite</mat-icon>
-                        Like
-                    </button> -->
                     <ng-container [ngSwitch]="isPostAlreadyLiked">
                         <ng-container *ngSwitchCase="true">
                             <ng-container *ngTemplateOutlet="alreadyLiked"></ng-container>
@@ -29,12 +25,16 @@
                 <form novalidate (submit)="onComment()" [formGroup]="commentForm">
                     <mat-form-field style="width: 100%;">
                         <mat-label>Comments</mat-label>
-                        <textarea matInput type="text" formControlName="commentControl">
+                        <textarea matInput 
+                            type="text" formControlName="commentControl"
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="1"
+                            cdkAutosizeMaxRows="6">
                         </textarea>
                     </mat-form-field>
                     <div class="comment-action">
                         <button mat-flat-button color="primary" type="submit">Comment</button>
-                        <button mat-flat-button type="reset">Cancel</button>
+                        <button mat-stroked-button type="reset">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -46,27 +46,20 @@
                     by
                     <span class="post-author">{{post.author.username}}</span>
                 </div>
-                <span class="post-date">Published: {{post.createdAt | date : 'dd/MM/yyyy HH:mm:ss'}}</span>
+                <span class="post-date">Published on: {{post.createdAt | date : 'dd/MM/yyyy HH:mm:ss'}}</span>
             </div>
             <div class="post-info-stat">
                 <span class="icon-text">
-                    <mat-icon color="warn">favorite</mat-icon>
+                    <mat-icon class="like-icon">favorite</mat-icon>
                     {{post.likeCount}} Likes
                 </span>
                 |
                 <span class="icon-text">
-                    <mat-icon color="primary">comment</mat-icon>
+                    <mat-icon color="accent">comment</mat-icon>
                     {{post.commentCount}} Comments
                 </span>
             </div>
             <div>
-                <!-- <mat-chip-listbox>
-                    <mat-chip-option 
-                        *ngFor="let tag of post.postTags"
-                        selectable="false" >
-                        {{tag}}
-                    </mat-chip-option>
-                </mat-chip-listbox> -->
                 <mat-chip-set>
                     <mat-chip *ngFor="let tag of post.postTags" class="post-tag">
                         {{tag}}
@@ -82,13 +75,15 @@
 </div>
 
 <ng-template #alreadyLiked>
-    <button mat-flat-button color="warn" (click)="onLikePost()">
+    <button mat-flat-button  
+        class="like-flat-button" (click)="onLikePost()">
         <mat-icon>favorite</mat-icon>
         Liked
     </button>
 </ng-template>
 <ng-template #notLiked>
-    <button mat-stroked-button color="warn" (click)="onLikePost()">
+    <button mat-stroked-button  
+        class="like-stroked-button" (click)="onLikePost()">
         <mat-icon>favorite</mat-icon>
         Like
     </button>
