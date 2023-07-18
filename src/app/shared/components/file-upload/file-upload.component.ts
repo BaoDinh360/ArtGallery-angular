@@ -55,6 +55,10 @@ export class FileUploadComponent implements ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
+  openFolder(){
+    this.fileInputVar.nativeElement.click();
+  }
+
   onSelectFile(event : any){
     const fileImg = event.target.files[0];
     if(fileImg){

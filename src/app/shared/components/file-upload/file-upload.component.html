@@ -3,7 +3,7 @@
         <mat-label>{{uploadImgName}}</mat-label>
         <input matInput disabled/>
         <button mat-icon-button matSuffix type="button" 
-            (click)="fileInput.click()"
+            (click)="openFolder()"
             [disabled]="disabled">
             <mat-icon>attach_file</mat-icon>
         </button>

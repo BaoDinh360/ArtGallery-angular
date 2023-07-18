@@ -1,34 +1,39 @@
 <form novalidate (ngSubmit)="onUpdateInfo()" [formGroup]="userInfoForm">
-    <div class="profile-info-row">
-        <div class="user-avatar-container">
-            <img *ngIf="userModel != undefined" class="user-img-avatar" 
-            src="{{previewImageUrl}}"/>
-            <app-file-upload formControlName="avatarUploadControl"
-                (fileSelected)="onFileSelected($event)"
-                #fileUpload>
-            </app-file-upload>
+    <div class="user-profile-container">
+        <div class="profile-info-row">
+            <div class="user-avatar-container">
+                <img *ngIf="userModel != undefined" class="user-img-avatar" 
+                src="{{previewImageUrl}}"/>
+                <!-- <app-file-upload formControlName="avatarUploadControl"
+                    (fileSelected)="onFileSelected($event)"
+                    #fileUpload>
+                </app-file-upload> -->
+                <button mat-flat-button color="primary" 
+                    (click)="openChangeAvatar()" type="button">Change avatar</button>
+            </div>
+        </div>
+        <div class="profile-info-row">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput 
+                    formControlName="nameControl"/>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input matInput type="email" 
+                    formControlName="emailControl"/>
+            </mat-form-field>
+        </div>
+        <div class="profile-info-row">
+            <mat-form-field>
+                <mat-label>Username</mat-label>
+                <input matInput 
+                    formControlName="usernameControl"/>
+            </mat-form-field>
+        </div>
+        <div class="profile-info-row">
+            <button mat-flat-button color="primary" type="submit">Update profile</button>
         </div>
     </div>
-    <div class="profile-info-row">
-        <mat-form-field>
-            <mat-label>Name</mat-label>
-            <input matInput 
-                formControlName="nameControl"/>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Email</mat-label>
-            <input matInput type="email" 
-                formControlName="emailControl"/>
-        </mat-form-field>
-    </div>
-    <div class="profile-info-row">
-        <mat-form-field>
-            <mat-label>Username</mat-label>
-            <input matInput 
-                formControlName="usernameControl"/>
-        </mat-form-field>
-    </div>
-    <div class="profile-info-row">
-        <button mat-flat-button color="primary" type="submit">Update</button>
-    </div>
+    
 </form>

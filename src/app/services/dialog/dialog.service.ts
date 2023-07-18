@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AuthenticateComponent } from 'src/app/authenticate/authenticate.component';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { AvatarUploadDialogComponent } from 'src/app/user/avatar-upload-dialog/avatar-upload-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -44,5 +45,16 @@ export class DialogService {
   }
   showInfoDialog(title: string, message: string, hasCancelButton: boolean = false){
     return this.showDialog('info', title, message, 'Ok', hasCancelButton); 
+  }
+
+  showChangeAvatarDialog(currentAvatarUrl: string){
+    const dialogRef = this.dialog.open(AvatarUploadDialogComponent, {
+      ...this.dialogConfig,
+      width: '35%',
+      data :{
+        currentAvatarUrl: currentAvatarUrl
+      }
+    });
+    return dialogRef;
   }
 }

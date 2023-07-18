@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserPostListComponent } from './user-post-list/user-post-list.component';
+import { AvatarUploadDialogComponent } from './avatar-upload-dialog/avatar-upload-dialog.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { UserPostListComponent } from './user-post-list/user-post-list.component
     UserDialogComponent,
     UserRoutingComponents,
     UserProfileComponent,
-    UserPostListComponent
+    UserPostListComponent,
+    AvatarUploadDialogComponent
   ],
   imports: [
     CommonModule,

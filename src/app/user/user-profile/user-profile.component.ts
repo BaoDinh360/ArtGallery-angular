@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { DialogService } from 'src/app/services/dialog/dialog.service';
 import { SnackbarNotificationService } from 'src/app/services/snackbar-notification.service';
 import { UserService } from 'src/app/services/user.service';
 import { RESPONSE_STATUS } from 'src/app/shared/models/enums';
@@ -14,11 +15,12 @@ import { UpdateUserInfo, User } from 'src/app/shared/models/userModel';
 export class UserProfileComponent implements OnInit {
   userInfoForm : FormGroup;
   userModel!: User;
-  fileImage!: File;
+  // fileImage!: File;
   previewImageUrl!: string;
   constructor(
     private userService : UserService,
-    private snackBar: SnackbarNotificationService
+    private snackBar: SnackbarNotificationService,
+    private dialogService: DialogService
   ){
     this.userInfoForm = new FormGroup({
       nameControl : new FormControl<string>('', [
@@ -56,27 +58,48 @@ export class UserProfileComponent implements OnInit {
     })
   }
 
-  onFileSelected(result: any){
-    this.previewImageUrl = result.imageUrl;
-    this.fileImage = result.fileImg;
+  openChangeAvatar(){
+    const dialogRef = this.dialogService.showChangeAvatarDialog(this.previewImageUrl);
+    dialogRef.afterClosed().subscribe(result =>{
+
+    })
   }
+
+  // onFileSelected(result: any){
+  //   this.previewImageUrl = result.imageUrl;
+  //   this.fileImage = result.fileImg;
+  // }
+
+  // onUpdateInfo() : void{
+  //   if(this.userInfoForm.valid){
+  //     const imageFormData = new FormData();
+  //     imageFormData.append('avatar', this.fileImage);
+  //     this.userService.uploadUserAvatar(imageFormData).subscribe(result =>{
+  //       const currentUserInfo: UpdateUserInfo = {
+  //         name: this.nameInfo?.value,
+  //         username: this.usernameInfo?.value,
+  //         avatar: result.data
+  //       }
+  //       this.userService.updateCurrentUserInfo(currentUserInfo).subscribe(result =>{
+  //         if(result.status === RESPONSE_STATUS.SUCCESS){
+  //           this.snackBar.showSuccessSnackbar('Update user info successfully', 3);
+  //           this.userService.loadUserProfile();
+  //         }
+  //       })
+  //     })
+  //   }
 
   onUpdateInfo() : void{
     if(this.userInfoForm.valid){
-      const imageFormData = new FormData();
-      imageFormData.append('avatar', this.fileImage);
-      this.userService.uploadUserAvatar(imageFormData).subscribe(result =>{
-        const currentUserInfo: UpdateUserInfo = {
-          name: this.nameInfo?.value,
-          username: this.usernameInfo?.value,
-          avatar: result.data
+      const currentUserInfo: UpdateUserInfo ={
+        name: this.nameInfo?.value,
+        username: this.usernameInfo?.value
+      }
+      this.userService.updateCurrentUserInfo(currentUserInfo).subscribe(result =>{
+        if(result.status === RESPONSE_STATUS.SUCCESS){
+          this.snackBar.showSuccessSnackbar('Update user info successfully', 3);
+          this.userService.loadUserProfile();
         }
-        this.userService.updateCurrentUserInfo(currentUserInfo).subscribe(result =>{
-          if(result.status === RESPONSE_STATUS.SUCCESS){
-            this.snackBar.showSuccessSnackbar('Update user info successfully', 3);
-            this.userService.loadUserProfile();
-          }
-        })
       })
     }
   }

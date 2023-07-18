@@ -1,3 +1,8 @@
+.user-profile-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+}
 .profile-info-row{
     display: flex;
     flex-direction: row;
@@ -12,6 +17,7 @@
     flex-direction: row;
     justify-content: flex-start;
     column-gap: 16px;
+    align-items: center;
 }
 .user-img-avatar{
     vertical-align: middle;

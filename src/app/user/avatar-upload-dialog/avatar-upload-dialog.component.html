@@ -1,0 +1,18 @@
+<div class="avatar-dialog-container">
+    <h2>Change new avatar</h2>
+    <div>
+        <img *ngIf="previewImageUrl" src="{{previewImageUrl}}"
+            class="avatar-img"/>
+    </div>
+    <app-file-upload hidden
+        #fileUpload
+        (fileSelected)="onFileSelected($event)">
+    </app-file-upload>
+    <button mat-flat-button color="primary" (click)="openFolder()">Upload photo</button>
+    <div class="button-container">
+        <button mat-flat-button (click)="onChangeAvatar()" color="primary">Change avatar</button>
+        <button mat-stroked-button (click)="oncloseDialogAndEmitData()">Cancel</button>
+    </div>
+    
+</div>
+
