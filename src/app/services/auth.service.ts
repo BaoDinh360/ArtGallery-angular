@@ -7,6 +7,8 @@ import { BehaviorSubject, Subject, map, tap } from 'rxjs';
 import { ResponseResult } from '../shared/models/responseResult';
 import { CurrentUserLoginInfo, UserLoginInfo } from '../shared/models/userLoginModel';
 import { User, UserLoginCredentials, UserRegistration } from '../shared/models/userModel';
+import { RESPONSE_STATUS } from '../shared/models/enums';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +32,7 @@ export class AuthService {
   constructor(
     private httpClient : HttpClient,
     private cookieService : CookieService,
+    private router: Router
   ) { 
   }
 
@@ -43,10 +46,12 @@ export class AuthService {
   refreshAccessToken(){
     return this.httpClient.post<ResponseResult<any>>('/api/auth/token', {withCredentials: true})
       .pipe(map(result =>{
-        if(result.data != undefined){
-          this.storeUserLoginInfo(result.data.accessToken);
-        // this.setUpCurrentUserLoginInfo();
-        }
+        this.storeUserLoginInfo(result.data.accessToken);
+        // if(result.data != undefined){
+        //   this.storeUserLoginInfo(result.data.accessToken);
+        // // this.setUpCurrentUserLoginInfo();
+        // }
+        // return result;
         return result;
       }))
   }
@@ -116,9 +121,11 @@ export class AuthService {
       .pipe(
         map(() =>{
           this.storeUserLoginInfo('');
+          this.router.navigate(['']);
         })
       );
   }
+
 
   // isSignedIn(){
   //   // if(this.getExpiration() == undefined){
@@ -200,8 +207,12 @@ export class AuthService {
     return this.accessToken;
   }
 
-  getRefreshToken(){
-    return this.cookieService.get('jwt-refresh');
+  getIsSignedIn() : boolean{
+    let isSignedIn : boolean = false;
+    this.isSignedIn().subscribe(result =>{
+      isSignedIn = result;
+    })
+    return isSignedIn;
   }
 
   // getExpiration(){

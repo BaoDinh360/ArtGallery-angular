@@ -37,6 +37,6 @@ export class UserDialogComponent implements OnInit, AfterViewInit {
   signOut() : void{
     this.authService.signOut().subscribe();
     this.signOutEvent.emit(false);
-    this.router.navigate(['']);
+    // this.router.navigate(['']);
   }
 }
