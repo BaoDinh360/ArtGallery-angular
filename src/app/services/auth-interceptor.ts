@@ -2,12 +2,15 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, catchError, filter, Observable, switchMap, take, throwError } from "rxjs";
 import { AuthService } from "./auth.service";
+import { RESPONSE_STATUS } from "../shared/models/enums";
+import { SnackbarNotificationService } from "./snackbar-notification.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor{
 
     constructor(
-        private authService : AuthService
+        private authService : AuthService,
+        private snackBar : SnackbarNotificationService
     ){}
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -23,19 +26,22 @@ export class AuthInterceptor implements HttpInterceptor{
                     return this.handle401Error(req, next);
                 }
                 else{
-                    return throwError(err);
+                    return throwError(() => err);
                 }
             }));
         }
         //No access token found
+        // else return next.handle(req).pipe(catchError(err =>{
+        //     //If access token expired, request new access token
+        //     if(err instanceof HttpErrorResponse && err.status === 401){
+        //         return this.handle401Error(req, next);
+        //     }
+        //     else{
+        //         return throwError(() => err);
+        //     }
+        // }));
         else return next.handle(req).pipe(catchError(err =>{
-            //If access token expired, request new access token
-            if(err instanceof HttpErrorResponse && err.status === 401){
-                return this.handle401Error(req, next);
-            }
-            else{
-                return throwError(err);
-            }
+            return throwError(() => err);
         }));
     }
 
@@ -55,10 +61,22 @@ export class AuthInterceptor implements HttpInterceptor{
             this.refreshTokenSubject.next(null);
 
             return this.authService.refreshAccessToken().pipe(
-                switchMap(result =>{
+                switchMap((result) =>{
                     this.isRefreshing = false;
                     this.refreshTokenSubject.next(result.data.accessToken);
-                    return next.handle(this.addTokenToHeader(req, result.data.accessToken))
+                    return next.handle(this.addTokenToHeader(req, result.data.accessToken));
+                    
+                }),
+                catchError((err) =>{
+                    this.isRefreshing = false;
+                    //if error 401 or 403, log out and show message
+                    if(err.status === 401 || err.status === 403){
+                        console.log('log out');
+                        
+                        this.authService.signOut().subscribe();
+                        this.snackBar.showErrorSnackbar('Your session has expired. Please sign in again to continue using!');
+                    }
+                    return throwError(() => err);
                 })
             )
         }
